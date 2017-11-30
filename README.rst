@@ -1,21 +1,32 @@
-.. image:: https://travis-ci.org/nicolas-maurice/boilerplate-python.svg?branch=master
-    :target: https://travis-ci.org/nicolas-maurice/boilerplate-python#
+.. image:: https://travis-ci.org/nicolas-maurice/create-python-project.svg?branch=master
+    :target: https://travis-ci.org/nicolas-maurice/create-python-project#
 
-.. image:: https://codecov.io/gh/nicolas-maurice/boilerplate-python/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/nicolas-maurice/boilerplate-python
+.. image:: https://codecov.io/gh/nicolas-maurice/create-python-project/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/nicolas-maurice/create-python-project
 
-Boilerplate Python
-==================
+Create-Python-Project
+=====================
 
-This project is a Python boilerplate and is meant to be forked when creating a new Python project.
+This project is inspired from excellent `Create-React-App`_.
+It implements a Command Line Interface to enable straightforward manipulation of Python projects.
+It allows to easily create a new Python project from an existing Python project by contextualizing it to your new project.
+Multiple context information can be updated such
 
-This project is structured as respecting common Python project conventions and gathers scripts to make DevOps straightforward including
-
-- creating development environment
-- testing
-- building docs
-- CI/CD scripts
+- Project's name
+- Author's information (name and email)
+- Hyperlinks to specific resources (such as badges)
 - etc.
+
+When creating the new project Create-Python-Project
+
+#. clones the original project
+#. applies commits for contextualization
+#. changes remote origin to the new project remote
+#. creates remote upstream to the original project
+
+This way it is straightforward to retrieve updates from the original project.
+
+.. _Create-React-App: https://github.com/facebookincubator/create-react-app
 
 Requirements
 ------------
@@ -41,62 +52,3 @@ Python
 Having Python 3.5 and 3.6 installed locally.
 
 It is also recommended having ``virtualenv`` installed locally.
-
-How to create a new Python project from this boilerplate ?
-----------------------------------------------------------
-
-Create the GitLab repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Fork Boilerplate-Python
-```````````````````````
-
-Fork Boilerplate-Python project.
-
-Manage project settings
-```````````````````````
-
-Go to the forked project settings and
-
-#. "Rename repository" as you like (assuming here you renamed it ``new-package-name``) being careful to rename Project Name and Path the same
-#. "Remove fork"
-
-Setup the project locally
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Clone the project
-`````````````````
-
-.. code-block:: sh
-
-    $ git clone git@git.lab-apps.fr:<group>/new-package-name.git
-    $ cd new-package-name
-
-Add a remote for later update
-`````````````````````````````
-
-.. code-block:: sh
-
-    $ git remote add boilerplate git@gitlab.com:nicolas.maurice.valera/boilerplate-python.git
-    $ git fetch boilerplate
-
-Rename the project
-``````````````````
-
-They are multiple scripts in the project that reference boilerplate-python, thus these scripts should be updated
-to be consistent with your package's name.
-
-When modifying name you should be careful to always respect the case sensitivity.
-
-- Boilerplate-Python -> New-Package-Name
-- boilerplate_python -> new_package_name
-- boilerplate-python -> new-package-name
-
-Update README.rst
-`````````````````
-
-Once all previous steps completed you can erase this README.rst script content and start it over with the description of your new project.
-
-You can also update the package description parameter in the ``setup.py`` script.
-
-For any further question you can refer to CONTRIBUTING.rst.

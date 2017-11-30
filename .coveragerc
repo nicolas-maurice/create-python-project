@@ -1,6 +1,6 @@
 [run]
 branch=True
-source=boilerplate_python
+source=create_python_project
 
 [report]
 precision=2
@@ -8,4 +8,4 @@ fail_under=100
 
 [html]
 directory=htmlcov
-title=Boilerplate-Python coverage Report
+title=Create-Python-Project coverage Report

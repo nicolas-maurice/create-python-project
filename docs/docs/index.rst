@@ -1,6 +1,6 @@
-Welcome to Boilerplate-Python
-=============================
+Welcome to Create-Python-Project
+================================
 
-Welcome to Boilerplate-Python's documentation.
+Welcome to Create-Python-Project's documentation.
 
 .. include:: contents.rst.inc

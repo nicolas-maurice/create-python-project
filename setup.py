@@ -1,8 +1,8 @@
 """
-    Boilerplate-Python
-    ~~~~~~~~~~~~~~~~~~
+    Create-Python-Project
+    ~~~~~~~~~~~~~~~~~~~~~
 
-    Boilerplate-Python is an empty Python project.
+    Create-Python-Project is a CLI application to facilitate Python project management
 
     It is meant to be forked when starting a new Python project to inherit multiple DevOps functions.
 """
@@ -20,14 +20,14 @@ def read(file_name):
 
 
 setup(
-    name='Boilerplate-Python',
+    name='Create-Python-Project',
     version='0.0.0',
     license=read('LICENSE.rst'),
-    url='https://gitlab.com/nicolas.maurice.valera/boilerplate-python',
+    url='https://github.com/nicolas-maurice/create-python-project',
     author='Nicolas Maurice',
     author_email='nicolas.maurice.valera@gmail.com',
-    description='Boilerplate-Python is an empty Python project',
-    packages=['boilerplate_python'],
+    description='Create-Python-Project is a CLI application to facilitate Python project management',
+    packages=['create_python_project'],
     install_requires=[
     ],
     extras_require={
