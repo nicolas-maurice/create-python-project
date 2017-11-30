@@ -4,4 +4,4 @@
 API Reference
 *************
 
-.. module:: boilerplate_python
+.. module:: create_python_project

@@ -1,10 +1,10 @@
-# A sample Makefile for facilitating docs building on Boilerplate-Python.
+# A sample Makefile for facilitating docs building on Create-Python-Project.
 
 # Docs directory
 
 # Sphinx info
 SPHINXOPTS=
-SPHINXPROJ=Boilerplate-Python
+SPHINXPROJ=Create-Python-Project
 ROOTDIR=..
 SOURCEDIR=.
 DOCS_DIR=docs

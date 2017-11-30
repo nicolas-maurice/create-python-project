@@ -1,4 +1,4 @@
-Boilerplate-Python is written and maintained by Nicolas Maurice and various contributors:
+Create-Python-Project is written and maintained by Nicolas Maurice and various contributors:
 
 Development Lead
 ````````````````
