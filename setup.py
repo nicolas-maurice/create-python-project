@@ -4,7 +4,8 @@
 
     Create-Python-Project is a CLI application to facilitate Python project management
 
-    It is meant to be forked when starting a new Python project to inherit multiple DevOps functions.
+    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :license: BSD, see LICENSE.rst for more details.
 """
 
 import os
@@ -40,6 +41,7 @@ setup(
             'autopep8',
             'coverage',
             'flake8',
+            'mock',
             'pytest>=3',
             'pytest-mock',
             'tox',
