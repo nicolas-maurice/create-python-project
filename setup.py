@@ -29,6 +29,10 @@ setup(
     description='Create-Python-Project is a CLI application to facilitate Python project management',
     packages=['create_python_project'],
     install_requires=[
+        'click==6.3',
+        'gitpython==2.1.7',
+        'semver==2.7.9',
+        'twine==1.9.1',
     ],
     extras_require={
         'dev': [
@@ -37,6 +41,7 @@ setup(
             'coverage',
             'flake8',
             'pytest>=3',
+            'pytest-mock',
             'tox',
             'sphinx',
         ],
@@ -44,8 +49,10 @@ setup(
     zip_safe=False,
     platforms='any',
     classifiers=[
+        'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
-        'Operating System :: OS Independent',
+        'Operating System :: POSIX',
+        'Operating System :: MacOS :: MacOS X',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
