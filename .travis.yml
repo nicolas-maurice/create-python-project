@@ -5,6 +5,8 @@ cache: pip
 
 matrix:
   include:
+    - python: 3.5
+      env: TOXENV=py,codecov
     - python: 3.6
       env: TOXENV=py,codecov
     - python: 3.6
@@ -12,6 +14,9 @@ matrix:
     - python: 3.6
       env: TOXENV=docs
 
-install: pip install tox
+install:
+  - pip install tox
+  - git config --global user.email "test@travis.org"
+  - git config --global user.name "Travis Runner"
 
 script: tox
