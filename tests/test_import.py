@@ -4,8 +4,8 @@
 
     Test import
 
-    :copyright: (c) 2015 by the Flask Team, see AUTHORS for more details.
-    :license: BSD, see LICENSE for more details.
+    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :license: BSD, see :ref:`license` for more details.
 """
 
 import create_python_project

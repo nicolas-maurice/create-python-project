@@ -4,8 +4,8 @@
 
     Implements functions to enable automatic manipulations of a project as a git repository
 
-    :copyright: (c) 2017 by Nicolas Maurice.
-    :license: BSD, see LICENSE.rst for more details.
+    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :license: BSD, see :ref:`license` for more details.
 """
 
 from git import Repo

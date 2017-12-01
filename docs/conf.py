@@ -1,5 +1,13 @@
-# Create-Python-Project documentation build configuration file
-#
+"""
+    docs.conf.py
+    ~~~~~~~~~~~~
+
+    Create-Python-Project documentation build configuration file
+
+    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :license: BSD, see :ref:`license` for more details.
+"""
+
 # This file is execfile()d with the current directory set to its
 # containing dir.
 #
@@ -13,6 +21,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+
 import os
 import sys
 from datetime import datetime
