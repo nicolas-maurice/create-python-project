@@ -2,15 +2,16 @@
     tests.conftest
     ~~~~~~~~~~~~~~
 
-    :copyright: (c) 2015 by the Flask Team, see AUTHORS for more details.
-    :license: BSD, see LICENSE for more details.
+    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :license: BSD, see :ref:`license` for more details.
 """
 import os
 
 import pytest
 from git import Git
+from mock import mock_open
 
-from create_python_project.git import RepositoryManager
+from create_python_project import RepositoryManager
 
 DIR_NAME = os.path.dirname(__file__)
 TEST_REPO = os.path.join(DIR_NAME, 'repo')
@@ -45,3 +46,19 @@ def repo(monkeypatch, mocker):
     for remote in _repo.remotes:
         if remote not in initial_remotes:
             _repo.delete_remote(remote)
+
+
+@pytest.fixture(scope='function')
+def base_script_content(mocker):
+    script_content = 'test-script-content'
+
+    # Set Directory to test repository to ensure consistency in tests
+    current_dir = os.getcwd()
+    os.chdir(TEST_REPO)
+
+    # Mock the open function
+    mocker.patch('builtins.open', mock_open(read_data=script_content))
+
+    yield script_content
+
+    os.chdir(current_dir)
