@@ -99,8 +99,9 @@ test: develop pytest
 
 run-coverage:
 	@$(COVERAGE) run -m pytest
-	@$(COVERAGE) report
 	@$(COVERAGE) html
+	@$(COVERAGE) report
+
 
 coverage: develop run-coverage
 	@xdg-open htmlcov/index.html
