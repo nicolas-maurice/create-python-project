@@ -10,15 +10,13 @@
 
 
 def test_tags(repo):
-    assert [tag_ref.tag.tag for tag_ref in repo.get_tags()] == ['v0.2.0', 'v0.1.1', 'v0.1.0', 'v0.0.0']
-    repo.create_tag('v0.3.0', message='Release v0.3.0')
-    assert [tag_ref.tag.tag for tag_ref in repo.get_tags()] == ['v0.3.0', 'v0.2.0', 'v0.1.1', 'v0.1.0', 'v0.0.0']
+    assert len(repo.get_tags()) == 11
 
 
 def test_get_commits(repo):
-    assert len(repo.get_commits()) == 54
-    assert len(repo.get_commits('715dfb6a60eb69aea9b7d32411e445efaa6389b')) == 2
-    assert len(repo.get_commits('v0.1.1')) == 20
+    assert len(repo.get_commits()) == 22
+    assert len(repo.get_commits('v1.0.1')) == 9
+    assert len(repo.get_commits('v0.0.2')) == 17
 
 
 def test_push(repo):
