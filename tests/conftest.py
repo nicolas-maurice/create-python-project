@@ -58,7 +58,7 @@ def repo(monkeypatch, mocker, repo_path, caplog):
                                  message='Release v{version}'.format(version=version))
                 if i > 0 and i % 8 == 0:
                     version = semver.bump_major(version)
-                elif i > 0 and i %  4 == 0:
+                elif i > 0 and i % 4 == 0:
                     version = semver.bump_minor(version)
                 else:
                     version = semver.bump_patch(version)
