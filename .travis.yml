@@ -24,7 +24,7 @@ matrix:
 
 install:
   - pip install tox
-  - git config --global user.email "test@travis.org"
+  - git config --global user.email "runner@travis.org"
   - git config --global user.name "Travis Runner"
 
 script: tox
