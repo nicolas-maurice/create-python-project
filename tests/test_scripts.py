@@ -7,62 +7,81 @@
     :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
-import builtins
+
 import os
 
 import pytest
+from docutils.io import TransformSpec, Output, StringOutput, FileOutput, Input, StringInput, FileInput, NullInput
 
 from create_python_project.scripts import BaseScript
+from create_python_project.scripts.base import TransformSpecDescriptor, SourceDescriptor, DestinationDescriptor
 
 
-def test_base_script_with_path(base_script_content, repo_path):
-    # Test init
-    invalid_script_path = 'invalid/script.txt'
+def _test_invalid_descriptor(descriptor_class, _transform_spec_class):
     with pytest.raises(AssertionError):
-        BaseScript(path=invalid_script_path)
-
-    script_path = 'setup.py'
-    base_script = BaseScript(path=script_path)
-    builtins.open.assert_any_call(base_script.path, 'r')
-    builtins.open().read.assert_called()
-    assert base_script.content == base_script_content
-
-    # Test path exploration functions
-    assert base_script.path == base_script.abspath
-    assert base_script.basename == script_path
-    assert base_script.dirname == repo_path
-    assert base_script.relpath(repo_path) == script_path
-
-    # Test save
-    base_script.save()
-    builtins.open.assert_any_call(base_script.abspath, 'w')
-    builtins.open().write.assert_any_call(base_script_content)
+        class InvalidDescriptor(descriptor_class):
+            transform_spec_class = _transform_spec_class
 
 
-def test_base_script_without_path(base_script_content, repo_path):
-    # Test init
-    base_script = BaseScript()
-    assert base_script.path is None
-    assert base_script.content is None
+def test_transform_spec_inheritance():
+    class TestDescriptor(TransformSpecDescriptor):
+        pass
 
-    base_script = BaseScript(content=base_script_content)
-    assert base_script.content == base_script_content
 
-    # Test path exploration functions
-    assert base_script.abspath is None
-    assert base_script.basename is None
-    assert base_script.dirname is None
-    assert base_script.relpath(repo_path) is None
+def test_invalid_descriptors():
+    _test_invalid_descriptor(TransformSpecDescriptor, None)
+    _test_invalid_descriptor(TransformSpecDescriptor, str)
+    _test_invalid_descriptor(TransformSpecDescriptor, 'test')
 
-    # Test set_path
-    valid_path = 'docs/conf.py'
-    base_script.set_path(valid_path)
-    assert base_script.path == os.path.join(repo_path, valid_path)
+    _test_invalid_descriptor(SourceDescriptor, Output)
 
-    valid_path = 'docs/test.py'
-    base_script.set_path(os.path.join(repo_path, valid_path))
-    assert base_script.path == os.path.join(repo_path, valid_path)
+    _test_invalid_descriptor(DestinationDescriptor, Input)
 
-    with pytest.raises(AssertionError):
-        base_script.set_path(os.path.join(repo_path, 'invalid/test.txt'))
-    assert base_script.path == os.path.join(repo_path, valid_path)
+
+def test_transform_spec_descriptor():
+    class TestClass:
+        tranform_spec = TransformSpecDescriptor()
+
+    test = TestClass()
+    test.tranform_spec = None
+    assert isinstance(test.tranform_spec, TransformSpec)
+
+
+def test_source_descriptor():
+    class TestClass:
+        source = SourceDescriptor()
+
+    test = TestClass()
+    test.source = None
+    assert isinstance(test.source, NullInput)
+
+
+def test_destination_descriptor():
+    class TestClass:
+        destination = DestinationDescriptor()
+
+    test = TestClass()
+    test.destination = 'test'
+    assert isinstance(test.destination, FileOutput)
+
+
+def test_base_script(repo_path, script_content):
+    # Test with string input
+    base_script = BaseScript(source=script_content)
+    assert isinstance(base_script.source, StringInput)
+    assert isinstance(base_script.destination, StringOutput)
+    assert base_script.publish() == script_content
+
+    # Test with file input
+    base_script = BaseScript(source=os.path.join(repo_path, 'setup.py'))
+    assert isinstance(base_script.source, FileInput)
+    assert isinstance(base_script.destination, StringOutput)
+
+    # Test set_destination and set_source
+    base_script.set_destination(None)
+    assert isinstance(base_script.destination, StringOutput)
+    for dirpath, dirnames, filenames in os.walk(repo_path):
+        for filename in filenames:
+            base_script.set_source(os.path.join(dirpath, filename))
+            assert base_script.source.source_path == os.path.join(dirpath, filename)
+            assert base_script.publish() is not None

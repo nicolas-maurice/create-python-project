@@ -5,6 +5,7 @@
     :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
+
 import logging
 import os
 import shutil
@@ -12,7 +13,6 @@ import shutil
 import pytest
 import semver
 from git import Git
-from mock import mock_open
 
 from create_python_project import RepositoryManager
 
@@ -69,10 +69,7 @@ def repo(monkeypatch, mocker, repo_path, caplog):
 
 
 @pytest.fixture(scope='function')
-def base_script_content(mocker):
-    script_content = 'test-script-content'
+def script_content(repo_path):
+    _script_content = 'test-script-content'
 
-    # Mock the open function
-    mocker.patch('builtins.open', mock_open(read_data=script_content))
-
-    yield script_content
+    yield _script_content
