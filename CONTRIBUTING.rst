@@ -26,7 +26,7 @@ Requirements
 
 #. Having the latest version of ``git`` installed locally
 #. Having Python 3.6 installed locally
-#.  Having ``virtualenv`` installed locally
+#. Having ``virtualenv`` installed locally
 
    To install ``virtualenv`` you can run the following command
 
