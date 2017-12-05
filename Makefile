@@ -92,8 +92,9 @@ auto-lint: autoflake autopep8
 
 lint: develop auto-lint
 
+TEST_FILE=
 pytest:
-	@$(PYTEST)
+	@$(PYTEST) $(TEST_FILE)
 
 test: develop pytest
 
@@ -101,7 +102,6 @@ run-coverage:
 	@$(COVERAGE) run -m pytest
 	@$(COVERAGE) html
 	@$(COVERAGE) report
-
 
 coverage: develop run-coverage
 	@xdg-open htmlcov/index.html
