@@ -1,6 +1,7 @@
 [run]
 branch=True
 source=create_python_project
+omit = create_python_project/pyutils/*
 
 [report]
 precision=2
