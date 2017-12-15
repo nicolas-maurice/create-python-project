@@ -9,7 +9,13 @@
 """
 
 from .base import BaseScript
+from .py import PyScript
+from .rst import RSTScript
+from .setup import PySetupScript
 
 __all__ = [
     'BaseScript',
+    'RSTScript',
+    'PyScript',
+    'PySetupScript',
 ]
