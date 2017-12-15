@@ -1,10 +1,10 @@
 """
-    scripts.setup
-    ~~~~~~~~~~~~~
+    create_python_project.scripts.setup
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Base class for python setup.py script manipulation
 
-    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
 

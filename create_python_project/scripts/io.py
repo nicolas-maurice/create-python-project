@@ -4,7 +4,7 @@
 
     Base class for input/output scripts
 
-    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
 

@@ -6,7 +6,7 @@
 
     Content instance stores the scripts content and enable to reconstruct a script from it
 
-    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
 
@@ -93,7 +93,6 @@ class PyContent(ScriptContent):
         if self.docstring:
             self.docstring.transform(new_info.docstring)
         self.code.transform(new_info.code)
-
 
 
 class PySetupContent(PyContent):
