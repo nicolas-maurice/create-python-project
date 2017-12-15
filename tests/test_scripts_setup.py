@@ -12,7 +12,7 @@ import os
 
 import pytest
 
-from create_python_project.scripts import SetupScript
+from create_python_project.scripts import PySetupScript
 from create_python_project.scripts.info import PySetupInfo, SetupInfo, SetupKwargsInfo, KwargInfo
 
 
@@ -27,7 +27,7 @@ def _test_setup_kwargs(kwargs, arg, value, lineno):
 
 
 def test_setup_script_info(repo_path):
-    setup_script = SetupScript(source=os.path.join(repo_path, 'setup.py'))
+    setup_script = PySetupScript(source=os.path.join(repo_path, 'setup.py'))
     setup_script.publish()
     assert setup_script.content.info.docstring.title.text == 'Boilerplate-Python'
     kwargs = setup_script.content.info.code.setup
@@ -63,7 +63,7 @@ def _set_info(setup_script, name=None, version=None, package=None):
 
 
 def _test_setup_script_valid_change(source, name=None, version=None, package=None):
-    setup_script = SetupScript(source=source)
+    setup_script = PySetupScript(source=source)
     setup_script.publish()
 
     new_info, name, version, package = _set_info(setup_script, name, version, package)
@@ -156,7 +156,7 @@ def test_setup_script_change(repo_path):
 
 
 def _test_invalid_setup_script_change(repo_path, name=None, version=None, package=None):
-    setup_script = SetupScript(source=os.path.join(repo_path, 'setup.py'))
+    setup_script = PySetupScript(source=os.path.join(repo_path, 'setup.py'))
     setup_script.publish()
 
     with pytest.raises(Exception):
