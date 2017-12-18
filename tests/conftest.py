@@ -2,7 +2,9 @@
     tests.conftest
     ~~~~~~~~~~~~~~
 
-    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    Implements fixture for tests
+
+    :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
 
@@ -38,7 +40,7 @@ def repo(monkeypatch, mocker, repo_path, caplog):
         _repo = RepositoryManager.init(path=repo_path)
 
         # Monkey patch and Mock _repo.git.push function so we do not need to effectively push to remotes during tests.
-        # We cannot monkey patch the git.push function due to GitPython implementation of Git class with __slots__
+        # We cannot patch the git.push function due to GitPython implementation of Git class with __slots__
         # (c.f. https://github.com/gitpython-developers/GitPython/blob/master/git/cmd.py)
         # So we need to monkey path the full _repo.git attribute
         class MockGit(Git):
@@ -66,10 +68,3 @@ def repo(monkeypatch, mocker, repo_path, caplog):
     yield _repo
 
     shutil.rmtree(os.path.join(repo_path, '.git'))
-
-
-@pytest.fixture(scope='function')
-def script_content(repo_path):
-    _script_content = 'test-script-content'
-
-    yield _script_content

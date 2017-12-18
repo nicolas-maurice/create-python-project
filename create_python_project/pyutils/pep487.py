@@ -4,7 +4,7 @@
 
     Implement patch for pep487
 
-    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
 
@@ -32,7 +32,6 @@ else:
             for k, v in cls.__dict__.items():
                 func = getattr(v, '__set_name__', None)
                 if func is not None:
-                    print("func", func)
                     func(cls, k)
             super(cls, cls).__init_subclass__(**kwargs)
             return cls
@@ -49,4 +48,3 @@ else:
 
     class object_with_init_subclass(pep487_object, metaclass=pep487_type):
         """Base class to inherit from to get pep487"""
-        pass

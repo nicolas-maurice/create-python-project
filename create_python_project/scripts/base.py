@@ -1,159 +1,135 @@
 """
-    scripts.base
-    ~~~~~~~~~~~~
+    create_python_project.scripts.base
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Base class for script manipulation
 
-    :copyright: (c) 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
 """
 
-import os
-from inspect import isclass
-
-from docutils.core import Publisher
-from docutils.io import TransformSpec, Input, FileInput, StringInput, NullInput, Output, FileOutput, StringOutput, ErrorOutput
-from docutils.nodes import TextElement
-from docutils.parsers import Parser
-from docutils.readers.standalone import Reader
-from docutils.writers import Writer
-
-from ..pyutils import object_with_init_subclass
+from .content import ScriptContent
+from .io import IOMeta, InputDescriptor, OutputDescriptor
 
 
-class TransformSpecDescriptor(object_with_init_subclass):
-    """Base class for Input Output descriptors"""
-
-    transform_spec_class = TransformSpec
-
-    def __init__(self):
-        self._transform_spec = None
-
-    def __get__(self, instance, owner):
-        return self._transform_spec
-
-    def __set__(self, instance, value, *args, **kwargs):
-        if isinstance(value, self.transform_spec_class):
-            self._transform_spec = value
-
-        else:
-            self._transform_spec = self.transform_spec_class(*args, **kwargs)
-
-    def __init_subclass__(cls, **kwargs):
-        """This method just terminates the super() chain"""
-        transform_spec_class = getattr(cls, "transform_spec_class", None)
-        assert transform_spec_class is not None, 'You must provide a transform_spec_class'
-        assert isclass(transform_spec_class) and issubclass(transform_spec_class, TransformSpec), \
-            'transform_spec_class must be a %s but you provided %s' % (TransformSpec, transform_spec_class)
-
-        super_class = super(cls, cls)
-        super_class.__init_subclass_with_transform_spec_class__(transform_spec_class)
-
-    @classmethod
-    def __init_subclass_with_transform_spec_class__(cls, transform_spec_class):
-        """This method just terminates the super() chain"""
-
-
-class SourceDescriptor(TransformSpecDescriptor):
-    transform_spec_class = Input
-
-    def __set__(self, instance, value, *args, **kwargs):
-        if isinstance(value, str):
-            if os.path.isfile(value):
-                source = FileInput(source_path=os.path.abspath(value))
-            else:
-                source = StringInput(value)
-        else:
-            source = NullInput()
-        super().__set__(instance, source, *args, **kwargs)
-
-    @classmethod
-    def __init_subclass_with_transform_spec_class__(cls, transform_spec_class):
-        super().__init_subclass_with_transform_spec_class__(transform_spec_class)
-        assert issubclass(transform_spec_class, Input), \
-            'transform_spec_class must be a %s but you provided %s' % (Input, transform_spec_class)
-
-
-class DestinationDescriptor(TransformSpecDescriptor):
-    transform_spec_class = Output
-
-    def __set__(self, instance, value, *args, **kwargs):
-        if isinstance(value, str):
-            destination = FileOutput(destination_path=os.path.abspath(value),
-                                     encoding='unicode')
-        else:
-            destination = StringOutput(encoding='unicode')
-        super().__set__(instance, destination, *args, **kwargs)
-
-    @classmethod
-    def __init_subclass_with_transform_spec_class__(cls, transform_spec_class):
-        super().__init_subclass_with_transform_spec_class__(transform_spec_class)
-        assert issubclass(transform_spec_class, Output), \
-            'transform_spec_class must be a %s but you provided %s' % (Output, transform_spec_class)
-
-
-class BaseParser(Parser):
+class BaseParser:
     """Base parser for scripts"""
 
-    def parse(self, inputstring, document):
-        document.append(TextElement(text=inputstring))
+    content_class = ScriptContent
+
+    def setup_parse(self, input_string):
+        self.input_string = input_string
+
+    def parse(self, input_string, content):
+        self.setup_parse(input_string)
+        content.set_lines(self.input_string.split('\n'))
 
 
-class BaseWriter(Writer):
+class BaseReader:
+    """Base reader for scripts"""
+
+    content_class = ScriptContent
+
+    def __init__(self, parser=None):
+        self.parser = parser
+
+        self.input = None
+        self.content = None
+
+    def read(self, source, parser):
+        self.init_content()
+        self.source = source
+        if not self.parser:
+            self.parser = parser
+        self.input = self.source.read()
+        self.parse()
+        return self.content
+
+    def parse(self):
+        self.parser.parse(self.input, self.content)
+
+    def init_content(self):
+        self.content = self.content_class()
+
+
+class BaseWriter:
     """Base writer for scripts"""
 
-    def translate(self):
-        self.output = self.document.astext()
+    def write(self, content, destination):
+        self.content = content
+        self.destination = destination
+        self.translate(content)
+        output = self.destination.write(self.output)
+        return output
+
+    def translate(self, content):
+        self.output = content.output()
 
 
-class BaseScript(Publisher):
+class BaseTransform:
+    """Base script transformation"""
+
+    def __init__(self, content):
+        self.content = content
+
+    def apply(self, new_info):
+        self.content.transform(new_info)
+
+
+class BaseScript(metaclass=IOMeta):
     """Base class for manipulating scripts"""
+
     supported_format = ('*',)
 
-    source = SourceDescriptor()
-    destination = DestinationDescriptor()
+    source = InputDescriptor()
+    destination = OutputDescriptor()
 
-    reader_class = Reader
+    reader_class = BaseReader
     writer_class = BaseWriter
     parser_class = BaseParser
 
-    def __init__(self, reader=None, parser=None, writer=None,
-                 source=None, destination=None):
-        self.document = None
-        """The document tree (`docutils.nodes` objects)."""
+    def __init__(self, source=None, destination=None,
+                 reader=None, parser=None, writer=None):
+        self.source = source
+        self.destination = destination
 
         self.reader = reader or self.reader_class()
-        """A `docutils.readers.Reader` instance."""
-
         self.parser = parser or self.parser_class()
-        """A `docutils.parsers.Parser` instance."""
-
         self.writer = writer or self.writer_class()
-        """A `docutils.writers.Writer` instance."""
 
-        for component in 'reader', 'parser', 'writer':
-            assert not isinstance(getattr(self, component), str), (
-                'passed string "%s" as "%s" parameter; pass an instance, '
-                'or use the "%s_name" parameter instead (in '
-                'docutils.core.publish_* convenience functions).'
-                % (getattr(self, component), component, component))
+        self.content = None
 
-        self.source = source
-        """The source of input data, a `docutils.io.Input` instance."""
+    def read(self):
+        if self.content is None:
+            self.content = self.reader.read(self.source, self.parser)
 
-        self.destination = destination
-        """The destination for docutils output, a `docutils.io.Output`
-        instance."""
+    def apply_transforms(self, new_info=None):
+        if new_info is not None:
+            for transform in self.get_transforms():
+                transform(self.content).apply(new_info)
 
-        self.get_settings()
+    def write(self):
+        return self.writer.write(self.content, self.destination)
 
-        """An object containing Docutils settings as instance attributes.
-        Set by `self.process_command_line()` or `self.get_settings()`."""
-
-        self._stderr = ErrorOutput()
+    def publish(self, new_info=None):
+        self.read()
+        self.apply_transforms(new_info)
+        output = self.write()
+        return output
 
     def set_source(self, source=None, source_path=None):
         self.source = source or source_path
+        self.reset()
+
+    def reset(self, reader=None, parser=None, writer=None):
+        self.content = None
+
+        self.reader = reader or self.reader_class()
+        self.parser = parser or self.parser_class()
+        self.writer = writer or self.writer_class()
 
     def set_destination(self, destination=None, destination_path=None):
         self.destination = destination or destination_path
+
+    def get_transforms(self):
+        return [BaseTransform]

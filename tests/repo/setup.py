@@ -7,14 +7,14 @@
     It is meant to be forked when starting a new Python project to inherit multiple DevOps functions.
 """
 
-import os
+from os import path
 
 from setuptools import setup
 
 
 def read(file_name):
     try:
-        return open(os.path.join(os.path.dirname(__file__), file_name)).read()
+        return open(path.join(path.dirname(__file__), file_name)).read()
     except FileNotFoundError:
         return ''
 
