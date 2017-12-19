@@ -1,8 +1,8 @@
-.. image:: https://travis-ci.org/nicolas-maurice/create-python-project.svg?branch=master
-    :target: https://travis-ci.org/nicolas-maurice/create-python-project#
+.. image:: https://travis-ci.org/nmvalera/create-python-project.svg?branch=master
+    :target: https://travis-ci.org/nmvalera/create-python-project#
 
-.. image:: https://codecov.io/gh/nicolas-maurice/create-python-project/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/nicolas-maurice/create-python-project
+.. image:: https://codecov.io/gh/nmvalera/create-python-project/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/nmvalera/create-python-project
 
 Create-Python-Project
 =====================
