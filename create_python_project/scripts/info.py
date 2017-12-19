@@ -87,7 +87,8 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
 
     def validate_info(self, info):
         if info is not None:
-            assert isinstance(info, type(self)), '{0} must be updated to {0} but you passed {1}'.format(type(self), info)
+            assert isinstance(info, type(self)), '{0} must be updated to {0} but you passed {1}'.format(type(self),
+                                                                                                        info)
 
     def transform_lines(self, new_info, lines):
         pass
@@ -299,6 +300,21 @@ class PyInfo(ComplexInfo):
     docstring_lineno = IntInfo(default=0)
 
 
+class VarInfo(ComplexInfo):
+    """Info for variable info"""
+
+    var = NonNullSingleLineStrInfo()
+    value = SingleLineStrInfo()
+    lineno = IntInfo()
+
+    def transform_lines(self, new_info, lines):
+        pattern = re.compile(
+            '(?P<var>{var}\s?=\s?)(?P<quote>[\'"])(?P<value>{value})[\'"]'.format(var=self.var, value=self.value))
+        lines[self.lineno] = pattern.sub('\g<var>\g<quote>{value}\g<quote>'.format(value=new_info.value),
+                                         lines[self.lineno])
+        super().transform_lines(new_info, lines)
+
+
 class KwargInfo(ComplexInfo):
     """Info for kwarg argument of a python function"""
 
@@ -307,8 +323,10 @@ class KwargInfo(ComplexInfo):
     lineno = IntInfo()
 
     def transform_lines(self, new_info, lines):
-        pattern = re.compile('(?P<arg>{arg}\s?=\s?)?(?P<quote>[\'"])(?P<value>{value})[\'"]'.format(arg=self.arg, value=self.value))
-        lines[self.lineno] = pattern.sub('\g<arg>\g<quote>{value}\g<quote>'.format(value=new_info.value), lines[self.lineno])
+        pattern = re.compile(
+            '(?P<arg>{arg}\s?=\s?)?(?P<quote>[\'"])(?P<value>{value})[\'"]'.format(arg=self.arg, value=self.value))
+        lines[self.lineno] = pattern.sub('\g<arg>\g<quote>{value}\g<quote>'.format(value=new_info.value),
+                                         lines[self.lineno])
         super().transform_lines(new_info, lines)
 
 
@@ -332,6 +350,14 @@ class SetupKwargsInfo(ComplexInfo):
 
 class SetupInfo(CodeInfo):
     setup = SetupKwargsInfo()
+
+
+class InitInfo(CodeInfo):
+    version = VarInfo()
+
+
+class PyInitInfo(PyInfo):
+    code = InitInfo(default=InitInfo)
 
 
 class PySetupInfo(PyInfo):

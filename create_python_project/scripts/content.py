@@ -10,7 +10,7 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from .info import BaseInfo, RSTScriptInfo, PyInfo, PySetupInfo, PyDocstringInfo
+from .info import BaseInfo, RSTScriptInfo, PyInfo, PySetupInfo, PyDocstringInfo, PyInitInfo
 
 
 class BaseContent:
@@ -99,3 +99,9 @@ class PySetupContent(PyContent):
     """Base content for setup.py script"""
 
     info_class = PySetupInfo
+
+
+class PyInitContent(PyContent):
+    """Base content for __init__.py script"""
+
+    info_class = PyInitInfo

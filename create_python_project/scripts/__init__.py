@@ -9,6 +9,7 @@
 """
 
 from .base import BaseScript
+from .init import PyInitScript
 from .py import PyScript
 from .rst import RSTScript
 from .setup import PySetupScript
@@ -18,4 +19,5 @@ __all__ = [
     'RSTScript',
     'PyScript',
     'PySetupScript',
+    'PyInitScript',
 ]
