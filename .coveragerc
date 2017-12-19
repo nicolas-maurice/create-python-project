@@ -6,6 +6,9 @@ omit = create_python_project/pyutils/*
 [report]
 precision = 2
 fail_under = 100
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
 
 [html]
 directory = htmlcov

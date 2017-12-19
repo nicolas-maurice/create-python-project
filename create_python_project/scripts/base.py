@@ -39,8 +39,7 @@ class BaseReader:
     def read(self, source, parser):
         self.init_content()
         self.source = source
-        if not self.parser:
-            self.parser = parser
+        self.parser = parser or self.parser
         self.input = self.source.read()
         self.parse()
         return self.content

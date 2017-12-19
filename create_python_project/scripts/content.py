@@ -26,9 +26,6 @@ class BaseContent:
         else:
             self.info = self.info_class()
 
-    def reset(self):
-        self.info = self.info_class()
-
 
 class ScriptContent(BaseContent):
     """Base content class for every script"""
@@ -39,10 +36,6 @@ class ScriptContent(BaseContent):
 
     def set_lines(self, lines=None):
         self.lines = lines
-
-    def reset(self):
-        super().reset()
-        self.lines = None
 
     def output(self):
         return '\n'.join(self.lines)
@@ -76,11 +69,6 @@ class PyContent(ScriptContent):
         lines = lines or self.lines
         super().set_lines(lines)
         self.code.set_lines(lines[self.info.docstring_lineno:])
-
-    def reset(self):
-        super().reset()
-        self.docstring.reset()
-        self.code.reset()
 
     def output(self):
         if self.docstring is not None and self.docstring.lines:

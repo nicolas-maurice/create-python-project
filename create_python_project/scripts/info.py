@@ -106,7 +106,7 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
 
         self.validate_info(new_info)
 
-        if lines is not None:
+        if lines is not None: # pragma: no branch
             self.transform_lines(new_info, lines)
 
         for field in self._fields:
@@ -180,6 +180,9 @@ class ItemTupleInfo(TupleInfo):
         return '{attr} elements must be instance of {type} but you passed {value}'.format(type=self._item_type,
                                                                                           attr=attr,
                                                                                           value=value)
+
+class IntTupleInfo(ItemTupleInfo):
+    _item_type = IntInfo
 
 
 class NonNullStrInfo(StrInfo):

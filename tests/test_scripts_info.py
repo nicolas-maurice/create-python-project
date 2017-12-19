@@ -10,7 +10,7 @@
 
 import pytest
 
-from create_python_project.scripts.info import RSTTitleInfo, TextInfo
+from create_python_project.scripts.info import ComplexInfo, RSTScriptInfo, RSTTitleInfo, TextInfo, IntTupleInfo
 
 
 def _invalid_modification(instance, attr, value):
@@ -33,6 +33,16 @@ def test_text_info():
     _invalid_modification(text_info, 'lineno', '4')
 
 
+def test_item_tuple_info():
+    class TestInfo(ComplexInfo):
+        integers = IntTupleInfo()
+
+    test = TestInfo()
+
+    with pytest.raises(TypeError):
+        test.integers = (TestInfo(),)
+
+
 def test_rst_title_info():
     rst_title = RSTTitleInfo()
 
@@ -43,3 +53,11 @@ def test_rst_title_info():
     _invalid_modification(rst_title, 'symbol', '')
     _invalid_modification(rst_title, 'symbol', '4')
     _invalid_modification(rst_title, 'symbol', '==')
+
+
+def test_rst_script_info():
+    rst_script_info = RSTScriptInfo()
+
+    _invalid_modification(rst_script_info,
+                          'title',
+                          TextInfo(text='title', lineno=5))

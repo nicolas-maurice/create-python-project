@@ -29,12 +29,12 @@ class SetupKwargsVisitor(PyCodeVisitor):
 
     def visit_keyword(self, node):
         if node.arg in self.info._fields:
-
             if isinstance(node.value, _ast.Str):
                 setattr(self.info, node.arg, KwargInfo(arg=node.arg,
                                                        value=node.value.s,
                                                        lineno=node.value.lineno - self.line_offset - 1))
-            elif isinstance(node.value, _ast.List):
+
+            elif isinstance(node.value, _ast.List): # pragma: no branch
                 setattr(self.info,
                         node.arg,
                         tuple([KwargInfo(arg=node.arg, value=elt.s, lineno=elt.lineno - self.line_offset - 1)
