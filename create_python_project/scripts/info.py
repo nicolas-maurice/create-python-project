@@ -87,7 +87,7 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
 
     def validate_info(self, info):
         assert isinstance(info, type(self)), '{0} must be updated to {0} but you passed {1}'.format(type(self),
-                                                                                                        info)
+                                                                                                    info)
 
     def transform_lines(self, new_info, lines):
         pass
@@ -101,11 +101,12 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
             setattr(self, field, new)
 
     def update(self, new_info, lines=None):
-        """Perform transformation on lines corresponding to the new provided info and update current info with new info"""
+        """Perform transformation on lines corresponding to the new provided info and
+         update current info with new info"""
 
         self.validate_info(new_info)
 
-        if lines is not None: # pragma: no branch
+        if lines is not None:  # pragma: no branch
             self.transform_lines(new_info, lines)
 
         for field in self._fields:
@@ -179,6 +180,7 @@ class ItemTupleInfo(TupleInfo):
         return '{attr} elements must be instance of {type} but you passed {value}'.format(type=self._item_type,
                                                                                           attr=attr,
                                                                                           value=value)
+
 
 class IntTupleInfo(ItemTupleInfo):
     _item_type = IntInfo
