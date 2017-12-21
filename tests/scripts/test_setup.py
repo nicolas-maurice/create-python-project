@@ -1,5 +1,5 @@
 """
-    tests.test_scripts_setup
+    tests.scripts.test_setup
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Test SetupScript functions
@@ -68,7 +68,7 @@ def _test_setup_script_valid_change(source, name=None, version=None, package=Non
 
     new_info, name, version, package = _set_info(setup_script, name, version, package)
 
-    publication = setup_script.publish(new_info)
+    publication = setup_script.publish(new_info=new_info)
     setup_info = setup_script.content.info.code.setup
     assert setup_info.name.value == name
     assert setup_info.version.value == version
@@ -76,7 +76,7 @@ def _test_setup_script_valid_change(source, name=None, version=None, package=Non
     return publication
 
 
-def test_setup_script_change(repo_path):
+def test_setup_script_change():
     source = \
         'from setuptools import setup\n' \
         '\n' \
@@ -161,7 +161,7 @@ def _test_invalid_setup_script_change(repo_path, name=None, version=None, packag
 
     with pytest.raises(Exception):
         new_info, name, version, package = _set_info(setup_script, name, version, package)
-        setup_script.publish(new_info)
+        setup_script.publish(new_info=new_info)
 
 
 def test_py_script_invalid_change(repo_path):

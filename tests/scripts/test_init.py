@@ -1,5 +1,5 @@
 """
-    tests.test_scripts_init
+    tests.scripts.test_init
     ~~~~~~~~~~~~~~~~~~~~~~~
 
     Test PyInitScript functions
@@ -53,7 +53,7 @@ def _test_init_script_valid_change(source, version=None):
 
     new_info, version = _set_info(init_script, version)
 
-    publication = init_script.publish(new_info)
+    publication = init_script.publish(new_info=new_info)
     version_info = init_script.content.info.code.version
     assert version_info.value == version
     return publication

@@ -1,5 +1,5 @@
 """
-    tests.test_scripts_rst
+    tests.scripts.test_rst
     ~~~~~~~~~~~~~~~~~~~~~~
 
     Test RSTScript functions
@@ -63,7 +63,7 @@ def _test_invalid_rst_change_title(text=None, symbol=None):
                                                     symbol=symbol,
                                                     lineno=rst_script.content.info.title.lineno,
                                                     has_overline=rst_script.content.info.title.has_overline))
-        rst_script.publish(new_info)
+        rst_script.publish(new_info=new_info)
 
 
 def _test_valid_rst_change_title(source, text=None, symbol=None):
@@ -77,7 +77,7 @@ def _test_valid_rst_change_title(source, text=None, symbol=None):
                                                 symbol=symbol,
                                                 lineno=rst_script.content.info.title.lineno,
                                                 has_overline=rst_script.content.info.title.has_overline))
-    publication = rst_script.publish(new_info)
+    publication = rst_script.publish(new_info=new_info)
     assert rst_script.content.info.title.text == text
     assert rst_script.content.info.title.symbol == symbol
     return publication

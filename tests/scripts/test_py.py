@@ -1,5 +1,5 @@
 """
-    tests.test_scripts_py
+    tests.scripts.test_py
     ~~~~~~~~~~~~~~~~~~~~~
 
     Test PyScript functions
@@ -74,7 +74,7 @@ def _test_py_script_valid_change(source, title=None, copyright=None, license=Non
 
     new_info, title, copyright, license = _set_info(py_script, title, copyright, license)
 
-    publication = py_script.publish(new_info)
+    publication = py_script.publish(new_info=new_info)
     assert py_script.content.info.docstring.title.text == title
     assert py_script.content.info.docstring.copyright.text == copyright
     assert py_script.content.info.docstring.license.text == license
@@ -135,7 +135,7 @@ def _test_py_script_invalid_change(source, title=None, copyright=None, license=N
 
     with pytest.raises(Exception):
         new_info, title, copyright, license = _set_info(py_script, title, copyright, license)
-        print(py_script.publish(new_info))
+        py_script.publish(new_info=new_info)
 
 
 def test_py_script_invalid_change(repo_path):

@@ -1,6 +1,6 @@
 """
-    tests.test_script_info
-    ~~~~~~~~~~~~~~~~~~~~~~
+    tests.scripts.test_info
+    ~~~~~~~~~~~~~~~~~~~~~~~
 
     Test Info implementation functions
 

@@ -1,5 +1,5 @@
 """
-    tests.test_scripts_io
+    tests.scripts.test_io
     ~~~~~~~~~~~~~~~~~~~~~
 
     Test Input/Output classes
