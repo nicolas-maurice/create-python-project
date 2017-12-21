@@ -8,23 +8,12 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-import configparser
-
 from .base import BaseScript, BaseReader, BaseWriter, BaseParser
 from .content import IniContent
 
 
 class IniParser(BaseParser):
     """Base class for parsing .ini"""
-
-    def setup_parse(self, input_string):
-        super().setup_parse(input_string)
-        self.config = configparser.ConfigParser()
-
-    def parse(self, input_string, content):
-        super().parse(input_string, content)
-        self.config.read_string(input_string)
-        content.config = self.config
 
 
 class IniReader(BaseReader):
