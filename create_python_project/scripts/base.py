@@ -65,16 +65,6 @@ class BaseWriter:
         self.output = content.output()
 
 
-class BaseTransform:
-    """Base script transformation"""
-
-    def __init__(self, content):
-        self.content = content
-
-    def apply(self, new_info):
-        self.content.transform(new_info)
-
-
 class BaseScript(metaclass=IOMeta):
     """Base class for manipulating scripts"""
 
@@ -102,17 +92,15 @@ class BaseScript(metaclass=IOMeta):
         if self.content is None:
             self.content = self.reader.read(self.source, self.parser)
 
-    def apply_transforms(self, new_info=None):
-        if new_info is not None:
-            for transform in self.get_transforms():
-                transform(self.content).apply(new_info)
+    def apply_transform(self, *args, **kwargs):
+        self.content.transform(*args, **kwargs)
 
     def write(self):
         return self.writer.write(self.content, self.destination)
 
-    def publish(self, new_info=None):
+    def publish(self, *args, **kwargs):
         self.read()
-        self.apply_transforms(new_info)
+        self.apply_transform(*args, **kwargs)
         output = self.write()
         return output
 
@@ -129,6 +117,3 @@ class BaseScript(metaclass=IOMeta):
 
     def set_destination(self, destination=None, destination_path=None):
         self.destination = destination or destination_path
-
-    def get_transforms(self):
-        return [BaseTransform]

@@ -86,8 +86,7 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
             setattr(self, field, kwargs.get(field, None))
 
     def validate_info(self, info):
-        if info is not None:
-            assert isinstance(info, type(self)), '{0} must be updated to {0} but you passed {1}'.format(type(self),
+        assert isinstance(info, type(self)), '{0} must be updated to {0} but you passed {1}'.format(type(self),
                                                                                                         info)
 
     def transform_lines(self, new_info, lines):

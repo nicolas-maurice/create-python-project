@@ -57,10 +57,7 @@ class RSTParser(BaseParser):
         self.rst_parser = rst.Parser()
 
         settings = OptionParser(components=(self.rst_parser, SettingsSpec())).get_default_values()
-        # for k in dir(settings):
-        #    print(k, getattr(settings, k))
         settings.file_insertion_enabled = False
-        # settings.report_level = 0
         self.rst_document = utils.new_document('<.rst>', settings)
 
     def parse(self, input_string, content):

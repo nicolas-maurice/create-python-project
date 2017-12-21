@@ -34,7 +34,7 @@ class SetupKwargsVisitor(PyCodeVisitor):
                                                        value=node.value.s,
                                                        lineno=node.value.lineno - self.line_offset - 1))
 
-            elif isinstance(node.value, _ast.List): # pragma: no branch
+            elif isinstance(node.value, _ast.List):  # pragma: no branch
                 setattr(self.info,
                         node.arg,
                         tuple([KwargInfo(arg=node.arg, value=elt.s, lineno=elt.lineno - self.line_offset - 1)
