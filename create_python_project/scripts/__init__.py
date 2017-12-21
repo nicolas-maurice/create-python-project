@@ -14,6 +14,7 @@ from .init import PyInitScript
 from .py import PyScript
 from .rst import RSTScript
 from .setup import PySetupScript
+from .yml import YmlScript
 
 __all__ = [
     'BaseScript',
@@ -22,4 +23,5 @@ __all__ = [
     'PySetupScript',
     'PyInitScript',
     'IniScript',
+    'YmlScript',
 ]
