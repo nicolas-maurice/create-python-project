@@ -1,6 +1,6 @@
 """
-    tests.scripts.test_info
-    ~~~~~~~~~~~~~~~~~~~~~~~
+    tests.test_info
+    ~~~~~~~~~~~~~~~
 
     Test Info implementation functions
 
@@ -10,7 +10,7 @@
 
 import pytest
 
-from create_python_project.scripts.info import ComplexInfo, RSTScriptInfo, RSTTitleInfo, TextInfo, IntTupleInfo
+from create_python_project.info import ComplexInfo, RSTScriptInfo, RSTTitleInfo, TextInfo, IntTupleInfo
 
 
 def _invalid_modification(instance, attr, value):

@@ -12,7 +12,7 @@ import os
 import pytest
 
 from create_python_project.scripts import PyScript
-from create_python_project.scripts.info import PyDocstringInfo, RSTTitleInfo, SingleLineTextInfo, PyInfo
+from create_python_project.info import PyDocstringInfo, RSTTitleInfo, SingleLineTextInfo, PyInfo
 
 
 def test_py_script(repo_path):

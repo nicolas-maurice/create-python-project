@@ -12,9 +12,14 @@ from docutils import SettingsSpec, nodes, utils
 from docutils.frontend import OptionParser
 from docutils.parsers import rst
 
-from .base import BaseScript, BaseReader, BaseWriter, BaseParser
-from .content import RSTContent
-from .info import RSTTitleInfo
+from .base import ContentWithInfo, BaseScript, BaseReader, BaseWriter, BaseParser
+from ..info import RSTScriptInfo, RSTTitleInfo
+
+
+class RSTContent(ContentWithInfo):
+    """Base content class for .rst script"""
+
+    info_class = RSTScriptInfo
 
 
 class RSTVisitor(nodes.NodeVisitor):

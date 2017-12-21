@@ -1,11 +1,20 @@
+"""
+    create_python_project.scripts.yml
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Base class for .yml script manipulation
+
+    :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
+    :license: BSD, see :ref:`license` for more details.
+"""
+
 import re
 from functools import partial
 
 import yaml
 from yaml.tokens import ScalarToken, ValueToken, BlockEntryToken, FlowEntryToken, FlowSequenceStartToken
 
-from .base import BaseScript, BaseReader, BaseWriter, BaseParser
-from .content import ScriptContent
+from .base import ScriptContent, BaseScript, BaseReader, BaseWriter, BaseParser
 
 
 class YmlContent(ScriptContent):

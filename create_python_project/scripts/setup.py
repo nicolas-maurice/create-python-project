@@ -11,9 +11,14 @@
 import _ast
 import ast
 
-from .content import PySetupContent
-from .info import SetupKwargsInfo, KwargInfo
-from .py import PyScript, PyParser, PyReader
+from .py import PyContent, PyScript, PyParser, PyReader
+from ..info import PySetupInfo, SetupKwargsInfo, KwargInfo
+
+
+class PySetupContent(PyContent):
+    """Base content for setup.py script"""
+
+    info_class = PySetupInfo
 
 
 class PyCodeVisitor(ast.NodeVisitor):

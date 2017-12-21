@@ -13,7 +13,7 @@ import os
 import pytest
 
 from create_python_project.scripts import PySetupScript
-from create_python_project.scripts.info import PySetupInfo, SetupInfo, SetupKwargsInfo, KwargInfo
+from create_python_project.info import PySetupInfo, SetupInfo, SetupKwargsInfo, KwargInfo
 
 
 def _test_kwarg(kwarg, arg, value, lineno):

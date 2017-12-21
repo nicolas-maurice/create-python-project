@@ -11,9 +11,14 @@
 import _ast
 import ast
 
-from .content import PyInitContent
-from .info import VarInfo
-from .py import PyScript, PyParser, PyReader
+from .py import PyContent, PyScript, PyParser, PyReader
+from ..info import PyInitInfo, VarInfo
+
+
+class PyInitContent(PyContent):
+    """Base content for __init__.py script"""
+
+    info_class = PyInitInfo
 
 
 class PyInitVisitor(ast.NodeVisitor):

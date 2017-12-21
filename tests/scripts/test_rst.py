@@ -13,7 +13,7 @@ import os
 import pytest
 
 from create_python_project.scripts import RSTScript
-from create_python_project.scripts.info import RSTScriptInfo, RSTTitleInfo
+from create_python_project.info import RSTScriptInfo, RSTTitleInfo
 
 
 def test_rst_script(repo_path):

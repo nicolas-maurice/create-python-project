@@ -10,10 +10,45 @@
 
 import ast
 
-from .base import BaseScript, BaseReader, BaseParser, BaseWriter
-from .content import PyContent
-from .info import SingleLineTextInfo
-from .rst import RSTScript, RSTVisitor, RSTParser
+from .base import ContentWithInfo, BaseScript, BaseReader, BaseParser, BaseWriter
+from .rst import RSTContent, RSTScript, RSTVisitor, RSTParser
+from ..info import PyInfo, PyDocstringInfo, SingleLineTextInfo
+
+
+class PyContent(ContentWithInfo):
+    """Base content class for .py script"""
+
+    info_class = PyInfo
+
+    def __init__(self, info=None, lines=None):
+        super().__init__(info, lines)
+        self.docstring = None
+        self.code = ContentWithInfo(self.info.code)
+
+    def init_docstring(self, docstring_lineno):
+        self.info.docstring = PyDocstringInfo()
+        self.docstring = RSTContent(info=self.info.docstring)
+        self.info.docstring_lineno = docstring_lineno
+
+    def set_lines(self, lines=None):
+        lines = lines or self.lines
+        super().set_lines(lines)
+        self.code.set_lines(lines[self.info.docstring_lineno:])
+
+    def output(self):
+        if self.docstring is not None and self.docstring.lines:
+            docstring = '\n'.join(['"""'] + [' ' * 4 + line for line in self.docstring.lines] + ['"""\n'])
+        else:
+            docstring = ''
+        return docstring + '\n'.join(self.code.lines)
+
+    def transform(self, old_value=None, new_value=None, new_info=None):
+        if isinstance(new_info, self.info_class):
+            if self.docstring:
+                self.docstring.transform(old_value=old_value,
+                                         new_value=new_value,
+                                         new_info=new_info.docstring)
+            self.code.transform(new_info=new_info.code)
 
 
 class PyDocstringVisitor(RSTVisitor):

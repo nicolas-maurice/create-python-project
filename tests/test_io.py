@@ -1,6 +1,6 @@
 """
-    tests.scripts.test_io
-    ~~~~~~~~~~~~~~~~~~~~~
+    tests.test_io
+    ~~~~~~~~~~~~~
 
     Test Input/Output classes
 
@@ -12,7 +12,7 @@ import os
 
 from docutils.io import StringOutput, FileOutput, StringInput, FileInput, NullInput
 
-from create_python_project.scripts.io import InputDescriptor, OutputDescriptor, IOMeta
+from create_python_project.io import InputDescriptor, OutputDescriptor, IOMeta
 
 
 def test_io_descriptor(repo_path):
