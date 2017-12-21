@@ -35,6 +35,7 @@ setup(
         'gitpython==2.1.7',
         'semver==2.7.9',
         'twine==1.9.1',
+        'pyyaml==3.12.0'
     ],
     extras_require={
         'dev': [
