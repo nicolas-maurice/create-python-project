@@ -8,7 +8,11 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from create_python_project.scripts import *
+from create_python_project.scripts import BaseScript, \
+    PyScript, PyInitScript, PySetupScript, \
+    IniScript, YmlScript, \
+    RSTScript, \
+    get_script_class
 
 
 def test_get_script_class():
