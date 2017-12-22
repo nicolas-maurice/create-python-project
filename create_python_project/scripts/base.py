@@ -27,6 +27,9 @@ class ScriptContent:
     def update_value(self, value, old, new):
         return value.replace(old, new)
 
+    def update_line(self, lineno, old, new):
+        self.lines[lineno] = self.update_value(self.lines[lineno], old, new)
+
     def transform(self, old_value=None, new_value=None):
         if isinstance(old_value, str) and isinstance(new_value, str):  # pragma: no branch
             for i, line in enumerate(self.lines):

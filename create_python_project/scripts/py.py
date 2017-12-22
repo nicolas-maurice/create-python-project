@@ -15,6 +15,66 @@ from .rst import RSTContent, RSTScript, RSTVisitor, RSTParser
 from ..info import PyInfo, PyDocstringInfo, SingleLineTextInfo
 
 
+class PyCodeVisitor(ast.NodeVisitor):
+    def __init__(self, content):
+        self.content = content
+
+
+class TransformImportVisitor(PyCodeVisitor):
+
+    def __init__(self, content, old_import=None, new_import=None):
+        super().__init__(content)
+        self.old_import = old_import
+        self.new_import = new_import
+        self.old_import_visited = False
+
+    def visit_Import(self, node):
+        for name in node.names:
+            if name.name == self.old_import:
+                self.old_import_visited = True
+                self.content.update_line(node.lineno - 1, self.old_import, self.new_import)
+                self.old_import_visited = name.asname is None
+
+            elif name.asname == self.old_import:  # pragma: no branch
+                self.old_import_visited = False
+
+    def visit_ImportFrom(self, node):
+        old_module, new_module = node.module, self.content.update_value(node.module,
+                                                                        self.old_import,
+                                                                        self.new_import)
+        self.content.update_line(node.lineno - 1, old_module, new_module)
+
+        for name in node.names:
+            if name.name == self.old_import:
+                self.old_import_visited = False
+
+    def visit_Name(self, node):
+        if self.old_import_visited:
+            if node.id == self.old_import:
+                self.content.update_line(node.lineno - 1, self.old_import, self.new_import)
+
+    def visit_arg(self, node):
+        if self.old_import_visited:
+            if node.arg == self.old_import:
+                self.content.update_line(node.lineno - 1, self.old_import, self.new_import)
+
+
+class PyCodeContent(ContentWithInfo):
+
+    def __init__(self, info=None, lines=None):
+        super().__init__(info, lines)
+        self.ast = None
+
+    def transform(self, old_import=None, new_import=None, new_info=None):
+        super().transform(new_info=new_info)
+        self.prepare_transform()
+        if isinstance(old_import, str) and isinstance(new_import, str):
+            TransformImportVisitor(self, old_import=old_import, new_import=new_import).visit(self.ast)
+
+    def prepare_transform(self):
+        self.ast = ast.parse(self.output())
+
+
 class PyContent(ContentWithInfo):
     """Base content class for .py script"""
 
@@ -23,7 +83,7 @@ class PyContent(ContentWithInfo):
     def __init__(self, info=None, lines=None):
         super().__init__(info, lines)
         self.docstring = None
-        self.code = ContentWithInfo(self.info.code)
+        self.code = PyCodeContent(self.info.code)
 
     def init_docstring(self, docstring_lineno):
         self.info.docstring = PyDocstringInfo()
@@ -42,13 +102,20 @@ class PyContent(ContentWithInfo):
             docstring = ''
         return docstring + '\n'.join(self.code.lines)
 
-    def transform(self, old_value=None, new_value=None, new_info=None):
+    def transform(self, old_value=None, new_value=None,
+                  old_import=None, new_import=None,
+                  new_info=None):
         if isinstance(new_info, self.info_class):
             if self.docstring:
                 self.docstring.transform(old_value=old_value,
                                          new_value=new_value,
                                          new_info=new_info.docstring)
-            self.code.transform(new_info=new_info.code)
+            self.code.transform(old_import=old_import,
+                                new_import=new_import,
+                                new_info=new_info.code)
+        else:
+            self.code.transform(old_import=old_import,
+                                new_import=new_import)
 
 
 class PyDocstringVisitor(RSTVisitor):
@@ -90,6 +157,7 @@ class PyParser(BaseParser):
 
     def parse(self, input_string, content):
         super().parse(input_string, content)
+        content.ast = self.ast
 
         self.parse_docstring(content)
         self.parse_code(content)

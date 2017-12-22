@@ -9,9 +9,8 @@
 """
 
 import _ast
-import ast
 
-from .py import PyContent, PyScript, PyParser, PyReader
+from .py import PyContent, PyScript, PyParser, PyReader, PyCodeVisitor
 from ..info import PySetupInfo, SetupKwargsInfo, KwargInfo
 
 
@@ -21,16 +20,14 @@ class PySetupContent(PyContent):
     info_class = PySetupInfo
 
 
-class PyCodeVisitor(ast.NodeVisitor):
+class PyCodeVisitorWithOffset(PyCodeVisitor):
     def __init__(self, content, line_offset=None):
-        self.content = content
-        self.line_offset = line_offset or content.info.docstring_lineno
-
-
-class SetupKwargsVisitor(PyCodeVisitor):
-    def __init__(self, content, line_offset=None):
-        super().__init__(content, line_offset)
+        super().__init__(content)
+        self.line_offset = line_offset or self.content.info.docstring_lineno
         self.info = self.content.info.code.setup
+
+
+class SetupKwargsVisitor(PyCodeVisitorWithOffset):
 
     def visit_keyword(self, node):
         if node.arg in self.info._fields:
@@ -46,7 +43,7 @@ class SetupKwargsVisitor(PyCodeVisitor):
                                for elt in node.value.elts]))
 
 
-class SetupVisitor(PyCodeVisitor):
+class SetupVisitor(PyCodeVisitorWithOffset):
     def __init__(self, content):
         super().__init__(content)
         self.setup_alias = None

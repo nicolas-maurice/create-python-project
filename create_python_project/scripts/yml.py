@@ -43,7 +43,7 @@ class YmlContent(ScriptContent):
                                    value=updated_value,
                                    end=self.lines[start_mark.line][end_mark.column:])
 
-            # comment are not parsed by PYyaml so we need to transform it manually
+            # comments are not parsed by PYyaml so we need to transform it manually
             self.transform_comment(old_value=old_value, new_value=new_value)
 
     def transform_comment(self, old_value=None, new_value=None):
