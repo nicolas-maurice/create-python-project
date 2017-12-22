@@ -11,8 +11,8 @@ import os
 
 import pytest
 
-from create_python_project.scripts import PyScript
 from create_python_project.info import PyDocstringInfo, RSTTitleInfo, SingleLineTextInfo, PyInfo
+from create_python_project.scripts import PyScript
 
 
 def test_py_script(repo_path):
@@ -143,3 +143,135 @@ def test_py_script_invalid_change(repo_path):
     _test_py_script_invalid_change(source, copyright=5)
     _test_py_script_invalid_change(source, copyright='')
     _test_py_script_invalid_change(source, license='license\nNew license')
+
+
+def test_py_script_import_change():
+    source = \
+        '"""\n' \
+        '    New Title\n' \
+        '    =========\n' \
+        '    \n' \
+        '    body\n' \
+        '    \n' \
+        '    :copyright: Copyright\n' \
+        '    :license: :ref:`license`\n' \
+        '"""\n' \
+        '\n' \
+        'import old_project\n' \
+        'from old_project.module import function\n' \
+        '\n' \
+        'function()\n' \
+        'old_project.function()\n' \
+        '\n' \
+        'def function2(old_project,\n' \
+        '              arg2=old_project):\n' \
+        '    return old_project.function()\n' \
+        '\n'
+    py_script = PyScript(source=source)
+
+    updated_source = \
+        '"""\n' \
+        '    New Title\n' \
+        '    =========\n' \
+        '    \n' \
+        '    body\n' \
+        '    \n' \
+        '    :copyright: Copyright\n' \
+        '    :license: :ref:`license`\n' \
+        '"""\n' \
+        '\n' \
+        'import new_project\n' \
+        'from new_project.module import function\n' \
+        '\n' \
+        'function()\n' \
+        'new_project.function()\n' \
+        '\n' \
+        'def function2(new_project,\n' \
+        '              arg2=new_project):\n' \
+        '    return new_project.function()\n' \
+        '\n'
+    assert py_script.publish(old_import='old_project', new_import='new_project') == updated_source
+
+    source = \
+        '\n' \
+        'import old_project as alias_project\n' \
+        'from old_project.module import function\n' \
+        '\n' \
+        'function()\n' \
+        'alias_project.function()\n' \
+        '\n' \
+        'def function2(old_project,\n' \
+        '              arg2=alias_project):\n' \
+        '    return old_project.function()\n' \
+        '\n'
+    py_script = PyScript(source=source)
+
+    updated_source = \
+        '\n' \
+        'import new_project as alias_project\n' \
+        'from new_project.module import function\n' \
+        '\n' \
+        'function()\n' \
+        'alias_project.function()\n' \
+        '\n' \
+        'def function2(old_project,\n' \
+        '              arg2=alias_project):\n' \
+        '    return old_project.function()\n' \
+        '\n'
+    assert py_script.publish(old_import='old_project', new_import='new_project') == updated_source
+
+    source = \
+        '\n' \
+        'import old_project\n' \
+        'from package import old_project\n' \
+        '\n' \
+        'function()\n' \
+        'old_project.function()\n' \
+        '\n' \
+        'def function2(old_project,\n' \
+        '              arg2=old_project):\n' \
+        '    return old_project.function()\n' \
+        '\n'
+    py_script = PyScript(source=source)
+
+    updated_source = \
+        '\n' \
+        'import new_project\n' \
+        'from package import old_project\n' \
+        '\n' \
+        'function()\n' \
+        'old_project.function()\n' \
+        '\n' \
+        'def function2(old_project,\n' \
+        '              arg2=old_project):\n' \
+        '    return old_project.function()\n' \
+        '\n'
+    assert py_script.publish(old_import='old_project', new_import='new_project') == updated_source
+
+    source = \
+        '\n' \
+        'import old_project\n' \
+        'import package as old_project\n' \
+        '\n' \
+        'function()\n' \
+        'old_project.function()\n' \
+        '\n' \
+        'def function2(old_project,\n' \
+        '              arg2=old_project):\n' \
+        '    return old_project.function()\n' \
+        '\n'
+    py_script = PyScript(source=source)
+
+    updated_source = \
+        '\n' \
+        'import new_project\n' \
+        'import package as old_project\n' \
+        '\n' \
+        'function()\n' \
+        'old_project.function()\n' \
+        '\n' \
+        'def function2(old_project,\n' \
+        '              arg2=old_project):\n' \
+        '    return old_project.function()\n' \
+        '\n'
+    assert py_script.publish(old_import='old_project', new_import='new_project') == updated_source
