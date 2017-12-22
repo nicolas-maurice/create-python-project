@@ -26,17 +26,16 @@ class TransformImportVisitor(PyCodeVisitor):
         super().__init__(content)
         self.old_import = old_import
         self.new_import = new_import
-        self.old_import_visited = False
+        self.should_rename_import = False
 
     def visit_Import(self, node):
         for name in node.names:
             if name.name == self.old_import:
-                self.old_import_visited = True
                 self.content.update_line(node.lineno - 1, self.old_import, self.new_import)
-                self.old_import_visited = name.asname is None
+                self.should_rename_import = name.asname is None
 
             elif name.asname == self.old_import:  # pragma: no branch
-                self.old_import_visited = False
+                self.should_rename_import = False
 
     def visit_ImportFrom(self, node):
         old_module, new_module = node.module, self.content.update_value(node.module,
@@ -46,15 +45,15 @@ class TransformImportVisitor(PyCodeVisitor):
 
         for name in node.names:
             if name.name == self.old_import:
-                self.old_import_visited = False
+                self.should_rename_import = False
 
     def visit_Name(self, node):
-        if self.old_import_visited:
+        if self.should_rename_import:
             if node.id == self.old_import:
                 self.content.update_line(node.lineno - 1, self.old_import, self.new_import)
 
     def visit_arg(self, node):
-        if self.old_import_visited:
+        if self.should_rename_import:
             if node.arg == self.old_import:
                 self.content.update_line(node.lineno - 1, self.old_import, self.new_import)
 
