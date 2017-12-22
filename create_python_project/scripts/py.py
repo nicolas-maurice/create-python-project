@@ -179,7 +179,7 @@ class PyWriter(BaseWriter):
 class PyScript(BaseScript):
     """Base class for manipulating py scripts"""
 
-    supported = (
+    supported_format = (
         '*.py',
     )
 
