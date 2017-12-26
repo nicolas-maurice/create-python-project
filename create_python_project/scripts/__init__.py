@@ -24,7 +24,7 @@ def is_supported(klass, file_path):
     """Evaluates if a file is compatible with a given Script class"""
 
     for ext in klass.supported_format:
-        if re.search(fnmatch.translate(ext), file_path):
+        if re.match(fnmatch.translate(ext), file_path):
             return True
     return False
 

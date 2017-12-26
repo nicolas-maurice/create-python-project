@@ -20,27 +20,21 @@ from .base import ScriptContent, BaseScript, BaseReader, BaseWriter, BaseParser
 class YmlContent(ScriptContent):
     _comment_pattern = re.compile('(?P<start>[^#]*)(?P<comment>#.*)')
 
-    def __init__(self, lines=None):
-        super().__init__(lines)
-        self.scan_yml = None
-
     def prepare_transform(self):
-        self.yml_tokens = self.scan_yml(self.output())
+        self.tokens = yaml.scan(self.output())
 
     def transform(self, old_value=None, new_value=None):
         if isinstance(old_value, str) and isinstance(new_value, str):
             self.prepare_transform()
-            for token in self.yml_tokens:
-                print(token)
+            for token in self.tokens:
                 if isinstance(token, ValueToken) or isinstance(token, BlockEntryToken) or \
                         isinstance(token, FlowEntryToken) or isinstance(token, FlowSequenceStartToken):
-                    token = next(self.yml_tokens)
+                    token = next(self.tokens)
                     if isinstance(token, ScalarToken):
                         start_mark, end_mark = token.start_mark, token.end_mark
-                        updated_value = self.update_value(token.value, old_value, new_value)
                         self.lines[start_mark.line] = '{start}{value}{end}'. \
                             format(start=self.lines[start_mark.line][:start_mark.column],
-                                   value=updated_value,
+                                   value=self.update_value(token.value, old_value, new_value),
                                    end=self.lines[start_mark.line][end_mark.column:])
 
             # comments are not parsed by PYyaml so we need to transform it manually
@@ -58,10 +52,6 @@ class YmlContent(ScriptContent):
 
 class YmlParser(BaseParser):
     """Base class for parsing .ini"""
-
-    def parse(self, input_string, content):
-        super().parse(input_string, content)
-        content.scan_yml = yaml.scan
 
 
 class YmlReader(BaseReader):

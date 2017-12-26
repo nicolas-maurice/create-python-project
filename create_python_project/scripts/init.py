@@ -54,7 +54,7 @@ class PyInitParser(PyParser):
 class PyInitScript(PyScript):
     """Base class for manipulating setup.py script"""
 
-    supported_format = ('__init__.py',)
+    supported_format = ('*/__init__.py',)
 
     parser_class = PyInitParser
     reader_class = PyInitReader
