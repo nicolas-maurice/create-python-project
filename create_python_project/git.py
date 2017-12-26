@@ -8,17 +8,39 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
+from functools import partial
+
 from git import Repo
+
+from .utils import is_matching
 
 
 class RepositoryManager(Repo):
     """Implements functions to automatically manipulate the project has a git repository"""
 
+    def apply_func(self, func, *args,  is_filtered=None, tree=None, **kwargs):
+        tree = tree or self.tree()
+
+        if isinstance(is_filtered, str):
+            is_filtered = [is_filtered]
+
+        if isinstance(is_filtered, list):
+            is_filtered = partial(is_matching, is_filtered)
+
+        for blob in tree.blobs:
+            if not callable(is_filtered) or is_filtered(blob):
+                func(blob,
+                     *[arg(blob) if callable(arg) else arg for arg in args],
+                     **{kw: arg(blob) if callable(arg) else arg for kw, arg in kwargs.items()})
+
+        for sub_tree in tree.trees:
+            self.apply_func(func, is_filtered=is_filtered, tree=sub_tree, *args, **kwargs)
+
     def get_tags(self):
         """Return ordered list of tags of the project ordered from most recent to oldest"""
         return sorted(self.tags, key=lambda tag: tag.commit.committed_datetime, reverse=True)
 
-    def get_scripts(self, tree=None):
+    def get_blobs(self, is_filtered=None):
         """Explore the git repository tree in order to list all scripts that are tracked by git
 
         :param tree: Repository tree
@@ -26,18 +48,11 @@ class RepositoryManager(Repo):
 
         :return: List of scripts paths
         """
-        tree = tree or self.tree()
 
-        scripts = []
-        # Get scripts at the tree level
-        for blob in tree.blobs:
-            scripts.append(blob)
+        blobs = []
+        self.apply_func(lambda blob: blobs.append(blob), is_filtered=is_filtered)
 
-        # Get scripts from sub trees
-        for sub_tree in tree.trees:
-            scripts += self.get_scripts(sub_tree)
-
-        return scripts
+        return blobs
 
     def get_commits(self, from_rev=None):
         """A list of commits from a given revision
@@ -63,3 +78,8 @@ class RepositoryManager(Repo):
         """
         extra_args = ['--follow-tags'] if push_tags else []
         self.git.push(*extra_args)
+
+    def mv(self, old_path, new_path):
+        """Rename"""
+        self.git.mv(old_path, new_path)
+        self.git.commit(old_path, new_path, '-m', 'rename folder {0} to {1}'.format(old_path, new_path))
