@@ -1,10 +1,10 @@
 .. image:: https://travis-ci.org/nicolas-maurice/boilerplate-python.svg?branch=master
-    :target: https://travis-ci.org/nicolas-maurice/boilerplate-python#
+    :target: https://travis-ci.org/nmvalera/boilerplate-python#
 
 .. image:: https://codecov.io/gh/nicolas-maurice/boilerplate-python/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/nicolas-maurice/boilerplate-python
+    :target: https://codecov.io/gh/nmvalera/boilerplate-python
 
-Boilerplate Python
+Boilerplate-Python
 ==================
 
 This project is a Python boilerplate and is meant to be forked when creating a new Python project.
