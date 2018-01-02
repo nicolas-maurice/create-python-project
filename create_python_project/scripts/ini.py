@@ -20,7 +20,7 @@ class IniContent(ScriptContent):
     _comment_pattern = re.compile('\s*#.*')
     _item_pattern = re.compile('((?P<option>.*?)(?P<delim>[=:]))?(?P<space>\s*)(?P<value>.*)')
 
-    def transform(self, old_value=None, new_value=None):
+    def transform(self, old_value=None, new_value=None, **kwargs):
         if isinstance(old_value, str) and isinstance(new_value, str):
             for i, line in enumerate(self.lines):
                 if self._section_pattern.match(line) or self._comment_pattern.match(line):

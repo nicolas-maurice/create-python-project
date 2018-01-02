@@ -64,8 +64,8 @@ class PyCodeContent(ContentWithInfo):
         super().__init__(info, lines)
         self.ast = None
 
-    def transform(self, old_import=None, new_import=None, new_info=None):
-        super().transform(new_info=new_info)
+    def transform(self, old_import=None, new_import=None, new_info=None, **kwargs):
+        super().transform(new_info=new_info, **kwargs)
         self.prepare_transform()
         if isinstance(old_import, str) and isinstance(new_import, str):
             TransformImportVisitor(self, old_import=old_import, new_import=new_import).visit(self.ast)
@@ -101,20 +101,10 @@ class PyContent(ContentWithInfo):
             docstring = ''
         return docstring + '\n'.join(self.code.lines)
 
-    def transform(self, old_value=None, new_value=None,
-                  old_import=None, new_import=None,
-                  new_info=None):
-        if isinstance(new_info, self.info_class):
-            if self.docstring:
-                self.docstring.transform(old_value=old_value,
-                                         new_value=new_value,
-                                         new_info=new_info.docstring)
-            self.code.transform(old_import=old_import,
-                                new_import=new_import,
-                                new_info=new_info.code)
-        else:
-            self.code.transform(old_import=old_import,
-                                new_import=new_import)
+    def transform(self, new_info=None, **kwargs):
+        if self.docstring:
+            self.docstring.transform(new_info=getattr(new_info, 'docstring', None), **kwargs)
+        self.code.transform(new_info=getattr(new_info, 'code', None), **kwargs)
 
 
 class PyDocstringVisitor(RSTVisitor):

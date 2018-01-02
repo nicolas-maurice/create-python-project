@@ -30,10 +30,10 @@ class ScriptContent:
     def update_line(self, lineno, old, new):
         self.lines[lineno] = self.update_value(self.lines[lineno], old, new)
 
-    def transform(self, old_value=None, new_value=None):
+    def transform(self, old_value=None, new_value=None, **kwargs):
         if isinstance(old_value, str) and isinstance(new_value, str):  # pragma: no branch
-            for i, line in enumerate(self.lines):
-                self.lines[i] = self.update_value(line, old_value, new_value)
+            for lineno in range(len(self.lines)):
+                self.update_line(lineno, old_value, new_value)
 
 
 class ContentWithInfo(ScriptContent):
@@ -48,11 +48,9 @@ class ContentWithInfo(ScriptContent):
         else:
             self.info = self.info_class()
 
-    def transform(self, old_value=None, new_value=None, new_info=None):
-        if isinstance(new_info, self.info_class):  # pragma: no branch
-            self.info.update(new_info, self.lines)
-        super().transform(old_value=old_value,
-                          new_value=new_value)
+    def transform(self, old_value=None, new_value=None, new_info=None, **kwargs):
+        self.info.update(new_info, self.lines, **kwargs)
+        super().transform(old_value=old_value, new_value=new_value)
 
 
 class BaseParser:

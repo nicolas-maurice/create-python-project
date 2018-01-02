@@ -23,7 +23,7 @@ class YmlContent(ScriptContent):
     def prepare_transform(self):
         self.tokens = yaml.scan(self.output())
 
-    def transform(self, old_value=None, new_value=None):
+    def transform(self, old_value=None, new_value=None, **kwargs):
         if isinstance(old_value, str) and isinstance(new_value, str):
             self.prepare_transform()
             for token in self.tokens:
