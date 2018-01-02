@@ -142,7 +142,7 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
         self.update_info(new_info)
 
     def __eq__(self, info):
-        if type(self) != type(info):
+        if not isinstance(self, type(info)):
             return False
 
         for field in self._fields:

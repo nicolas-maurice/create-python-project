@@ -17,6 +17,7 @@ def test_eq():
     assert not TextInfo() == IntTupleInfo()
     assert RSTTitleInfo(text='title1') != RSTTitleInfo(text='title2')
 
+
 def _invalid_modification(instance, attr, value):
     with pytest.raises(Exception):
         setattr(instance, attr, value)

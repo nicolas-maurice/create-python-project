@@ -18,7 +18,7 @@ from .utils import is_matching
 class RepositoryManager(Repo):
     """Implements functions to automatically manipulate the project has a git repository"""
 
-    def apply_func(self, func, *args,  is_filtered=None, tree=None, **kwargs):
+    def apply_func(self, func, *args, is_filtered=None, tree=None, **kwargs):
         tree = tree or self.tree()
 
         if isinstance(is_filtered, str):

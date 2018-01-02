@@ -10,6 +10,7 @@
 
 import os
 
+
 def test_rename_project(manager, ):
     assert manager.setup_info.version.value == '0.0.0'
     assert manager.setup_info.name.value == 'Boilerplate-Python'
@@ -25,7 +26,7 @@ def test_rename_project(manager, ):
     assert manager.get_info(is_filtered='README.rst')[0].title.text == 'New-Package-Name'
 
     # Test .coveragerc has been correctly modified
-    publication =  manager.get_scripts(is_filtered='.coveragerc')[0].publish()
+    publication = manager.get_scripts(is_filtered='.coveragerc')[0].publish()
     assert publication.split('\n')[2] == 'source = new_package_name'
     assert publication.split('\n')[10] == 'title = New-Package-Name coverage Report'
 

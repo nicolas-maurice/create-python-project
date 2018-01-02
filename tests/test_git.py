@@ -33,8 +33,8 @@ def test_mv(repo):
 
 def _test_apply_func(repo, calls_count, is_filtered=None):
     args, kwargs, func = (Mock(return_value='arg'), 'test'), \
-                         {'keyword': Mock(return_value='kwarg'),
-                          'test': 'test'}, Mock()
+        {'keyword': Mock(return_value='kwarg'),
+         'test': 'test'}, Mock()
     repo.apply_func(func, is_filtered=is_filtered, *args, **kwargs)
 
     assert args[0].call_args_list == kwargs['keyword'].call_args_list
