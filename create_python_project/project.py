@@ -9,26 +9,28 @@
 """
 
 from .git import RepositoryManager
-from .utils import get_info, publish, \
+from .utils import get_script, get_info, publish, \
     format_package_name, format_project_name, format_py_script_title
-
-
-def get_config():
-    return
 
 
 class ProjectManager(RepositoryManager):
 
-    def get_info(self, is_filtered):
+    def get_scripts(self, *args, **kwargs):
+        scripts = []
+        self.apply_func(lambda blob: scripts.append(get_script(blob)), *args, **kwargs)
+        return scripts
+
+    def get_info(self, *args, **kwargs):
         info = []
-        self.apply_func(lambda blob: info.append(get_info(blob)), is_filtered=is_filtered)
+        self.apply_func(lambda blob: info.append(get_info(blob)), *args, **kwargs)
+        return info
 
     def publish(self, *args, **kwargs):
         self.apply_func(publish, *args, **kwargs)
 
     @property
     def setup_info(self):
-        info = self.get_info('setup.py')
+        info = self.get_info(is_filtered='setup.py')
         return info[0].code.setup
 
     def set_project_name(self, name):
@@ -39,14 +41,20 @@ class ProjectManager(RepositoryManager):
         new_project_name, new_package_name = format_project_name(name), format_package_name(name)
 
         old_info = self.setup_info
-        self.mv(old_info.package[0].text, new_package_name)
+        self.mv(old_info.packages[0].value, new_package_name)
 
         # Update python scripts headers title
         self.publish(is_filtered='{folder}*.py'.format(folder=new_package_name),
-                     new_title=format_py_script_title)
+                     title=lambda blob: format_py_script_title(blob.path))
 
-        # Update scripts
-        self.publish(old_project_name=old_info.name.text, new_project_name=new_project_name,
-                     old_package_name=old_info.package[0].text, new_package_name=new_package_name)
+        # Rename imports in .py files
+        self.publish(is_filtered='*.py', old_import=old_info.packages[0].value, new_import=new_package_name)
 
+        # Replace textual
+        self.publish(old_value=old_info.name.value, new_value=new_project_name)
+        self.publish(old_value=old_info.packages[0].value, new_value=new_package_name)
+        self.publish(old_value=old_info.packages[0].value.replace('_', '-'),
+                     new_value=new_package_name.replace('_', '-'))
+
+        # Commit modifications
         self.git.commit('-am', 'rename project to {name}'.format(name=new_project_name))
