@@ -55,7 +55,7 @@ class OutputDescriptor(IODescriptor):
 
     def __set__(self, instance, value, *args, **kwargs):
         if isinstance(value, str):
-            destination = FileOutput(destination_path=os.path.abspath(value), encoding='unicode')
+            destination = FileOutput(destination_path=os.path.abspath(value))
         else:
             destination = StringOutput(encoding='unicode')
         super().__set__(instance, destination)
