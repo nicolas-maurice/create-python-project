@@ -20,13 +20,10 @@ class FieldDescriptor:
 
     def __init__(self, name=None, default=None):
         self._name = name
-        if callable(default):
-            self.default = default()
-        else:
-            self.default = default
+        self.default = default
 
     def __set__(self, instance, value):
-        value = value if value is not None else self.default
+        value = value if value is not None else self.default() if callable(self.default) else self.default
         if value is not None:
             self.validate(instance, value)
         instance.__dict__[self._name] = value
@@ -65,14 +62,20 @@ class InfoMeta(type):
         return OrderedDict()
 
     def __new__(mcs, name, bases, ns):
-        cls = super().__new__(mcs, name, bases, dict(ns))
-
-        fields = sum([list(base._fields) for base in bases if hasattr(base, '_fields')], [])
-
+        fields = []
         for field, info in ns.items():
             if isinstance(info, FieldDescriptor):
                 info.set_name(field)
                 fields.append(field)
+
+        for base in bases:
+            if hasattr(base, '_fields'):
+                for field in base._fields:
+                    fields.append(field)
+                    ns.setdefault(field, base.__dict__[field])
+
+        cls = super().__new__(mcs, name, bases, dict(ns))
+
         cls._fields = tuple(set(fields))
 
         return cls
@@ -86,9 +89,22 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
         for field in self._fields:
             setattr(self, field, kwargs.get(field, None))
 
-    def validate_info(self, info):
-        assert isinstance(info, type(self)), '{0} must be updated to {0} but you passed {1}'.format(type(self),
-                                                                                                    info)
+    def validate_info(self, info=None, **kwargs):
+        if info is not None:
+            assert isinstance(info, type(self)), '{0} must be updated to {0} but you passed {1}'.format(type(self),
+                                                                                                        info)
+            return info
+        else:
+            return self.copy(**kwargs)
+
+    def copy(self, **kwargs):
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        copy_kwargs = {
+            field: info.copy(**kwargs) if isinstance(info, BaseInfo) else info
+            for field, info in zip(self._fields, [getattr(self, field) for field in self._fields])
+        }
+        copy_kwargs.update(kwargs)
+        return type(self)(**copy_kwargs)
 
     def transform_lines(self, new_info, lines):
         pass
@@ -101,11 +117,11 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
                 current.update_info(new)
             setattr(self, field, new)
 
-    def update(self, new_info, lines=None):
+    def update(self, new_info, lines=None, **kwargs):
         """Perform transformation on lines corresponding to the new provided info and
          update current info with new info"""
 
-        self.validate_info(new_info)
+        new_info = self.validate_info(new_info, **kwargs)
 
         if lines is not None:  # pragma: no branch
             self.transform_lines(new_info, lines)
@@ -113,7 +129,7 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
         for field in self._fields:
             current, new = getattr(self, field), getattr(new_info, field, None)
             if isinstance(current, BaseInfo) and isinstance(new, BaseInfo):
-                current.update(new, lines)
+                current.update(new, lines, **kwargs)
             else:
                 try:
                     iterator = iter(current)
@@ -124,6 +140,16 @@ class BaseInfo(FieldDescriptor, metaclass=InfoMeta):
                         if isinstance(info, BaseInfo):
                             info.update(new[i], lines)
         self.update_info(new_info)
+
+    def __eq__(self, info):
+        if type(self) != type(info):
+            return False
+
+        for field in self._fields:
+            if getattr(self, field) != getattr(info, field):
+                return False
+
+        return True
 
 
 class BaseTypeInfo(BaseInfo):
@@ -280,6 +306,11 @@ class RSTScriptInfo(ComplexInfo):
     """Info of an .rst script"""
 
     title = RSTTitleInfo()
+
+    def __init__(self, title=None, **kwargs):
+        if isinstance(title, str):
+            title = type(type(self).__dict__['title'])(text=title)
+        super().__init__(title=title, **kwargs)
 
 
 class SingleLineTextInfo(TextInfo):
