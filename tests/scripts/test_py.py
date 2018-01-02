@@ -82,7 +82,7 @@ def _test_py_script_valid_change(source, title=None, copyright=None, license=Non
     return publication
 
 
-def test_py_script_change(repo_path):
+def test_py_script_change():
     source = \
         '"""\n' \
         '    title\n' \

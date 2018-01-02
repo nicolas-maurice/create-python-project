@@ -23,4 +23,4 @@ def test_get_script_class():
     assert get_script_class('/module/__init__.py') == PyInitScript
     assert get_script_class('AUTHORS.rst') == RSTScript
     assert get_script_class('/module/random.rdm') == BaseScript
-    assert get_script_class('/modulde/setup.py') == PySetupScript
+    assert get_script_class('/module/setup.py') == PyScript
