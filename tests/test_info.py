@@ -13,14 +13,20 @@ import pytest
 from create_python_project.info import ComplexInfo, RSTScriptInfo, RSTTitleInfo, TextInfo, IntTupleInfo
 
 
+def test_eq():
+    assert not TextInfo() == IntTupleInfo()
+    assert RSTTitleInfo(text='title1') != RSTTitleInfo(text='title2')
+
 def _invalid_modification(instance, attr, value):
     with pytest.raises(Exception):
         setattr(instance, attr, value)
+    assert instance == instance.copy()
 
 
 def _valid_modification(instance, attr, value):
     setattr(instance, attr, value)
     assert getattr(instance, attr) == value
+    assert instance == instance.copy()
 
 
 def test_text_info():

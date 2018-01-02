@@ -15,7 +15,7 @@ from mock import Mock, call
 
 
 def test_get_blobs(repo):
-    assert len(repo.get_blobs()) == 22
+    assert len(repo.get_blobs()) == 24
 
 
 def test_mv(repo):
@@ -44,20 +44,20 @@ def _test_apply_func(repo, calls_count, is_filtered=None):
 
 
 def test_apply_func(repo):
-    _test_apply_func(repo, 22)
+    _test_apply_func(repo, 24)
     _test_apply_func(repo, 1, is_filtered='boilerplate_python*')
-    _test_apply_func(repo, 3, is_filtered=['*.py'])
+    _test_apply_func(repo, 5, is_filtered=['*.py'])
     _test_apply_func(repo, 2, is_filtered=lambda blob: re.compile('setup').match(blob.path))
 
 
 def test_tags(repo):
-    assert len(repo.get_tags()) == 11
+    assert len(repo.get_tags()) == 12
 
 
 def test_get_commits(repo):
-    assert len(repo.get_commits()) == 22
-    assert len(repo.get_commits('v1.0.1')) == 9
-    assert len(repo.get_commits('v0.0.2')) == 17
+    assert len(repo.get_commits()) == 24
+    assert len(repo.get_commits('v1.0.1')) == 11
+    assert len(repo.get_commits('v0.0.2')) == 19
 
 
 def test_push(repo):
