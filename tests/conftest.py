@@ -64,6 +64,7 @@ def _prepare_repo(repo_class, repo_path, mocker, monkeypatch, caplog):
                 else:
                     version = semver.bump_patch(version)
 
+        repo.create_remote('origin', 'git@github.com:nmvalera/boilerplate-python.git')
     return repo
 
 
