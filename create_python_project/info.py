@@ -383,6 +383,11 @@ class SetupKwargsInfo(ComplexInfo):
     description = KwargInfo()
     packages = KwargTupleInfo()
 
+    def __init__(self, **kwargs):
+        for arg in self._fields:
+            if isinstance(kwargs.get(arg, None), str) and isinstance(type(self).__dict__[arg], KwargInfo):
+                kwargs[arg] = type(type(self).__dict__[arg])(value=kwargs.get(arg))
+        super().__init__(**kwargs)
 
 class SetupInfo(CodeInfo):
     setup = SetupKwargsInfo()
