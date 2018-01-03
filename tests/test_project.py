@@ -56,7 +56,6 @@ def test_set_author(manager):
 def test_set_origin(manager):
     old_urls = list(manager.remotes['origin'].urls)
 
-    print(manager.setup_info.url.value)
     manager.set_origin('upstream', 'https://github.com/nmvalera/new-remote.git')
     assert list(manager.remotes['upstream'].urls) == old_urls
     assert list(manager.remotes['origin'].urls) == ['https://github.com/nmvalera/new-remote.git']

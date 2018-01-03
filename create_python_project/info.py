@@ -389,6 +389,7 @@ class SetupKwargsInfo(ComplexInfo):
                 kwargs[arg] = type(type(self).__dict__[arg])(value=kwargs.get(arg))
         super().__init__(**kwargs)
 
+
 class SetupInfo(CodeInfo):
     setup = SetupKwargsInfo()
 
