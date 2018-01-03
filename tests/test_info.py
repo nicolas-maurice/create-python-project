@@ -63,8 +63,8 @@ def test_rst_title_info():
 
 
 def test_rst_script_info():
-    rst_script_info = RSTScriptInfo()
+    rst_script_info = RSTScriptInfo(title='title1')
 
     _invalid_modification(rst_script_info,
                           'title',
-                          TextInfo(text='title', lineno=5))
+                          TextInfo(text='title2', lineno=5))

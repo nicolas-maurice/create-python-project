@@ -323,6 +323,12 @@ class PyDocstringInfo(RSTScriptInfo):
     copyright = SingleLineTextInfo()
     license = SingleLineTextInfo()
 
+    def __init__(self, **kwargs):
+        for arg in self._fields:
+            if isinstance(kwargs.get(arg, None), str) and isinstance(type(self).__dict__[arg], TextInfo):
+                kwargs[arg] = type(type(self).__dict__[arg])(text=kwargs.get(arg))
+        super().__init__(**kwargs)
+
 
 class CodeInfo(BaseInfo):
     """Info for python script code"""

@@ -88,3 +88,6 @@ class ProjectManager(RepositoryManager):
         self.set_project_url(url=new_url)
         self.set_url_value(list(self.remotes[new_name].urls)[0],
                            list(self.remotes['origin'].urls)[0])
+
+    def set_py_script_headers(self, license=None, copyright=None):
+        self.publish(is_filtered='*.py', license=license, copyright=copyright)

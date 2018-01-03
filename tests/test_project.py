@@ -67,3 +67,15 @@ def test_set_origin(manager):
 
     publication = manager.get_scripts(is_filtered='setup.py')[0].publish()
     assert publication.split('\n')[25] == '    url=\'https://github.com/nmvalera/new-remote\','
+
+
+def test_set_py_script_headers(manager):
+    manager.set_py_script_headers(license='New license')
+    publication = manager.get_scripts(is_filtered='boilerplate_python/__init__.py')[0].publish()
+    assert publication.split('\n')[6] == '    :copyright: Copyright 2017 by Nicolas Maurice.'
+    assert publication.split('\n')[7] == '    :license: New license'
+
+    manager.set_py_script_headers(copyright='New copyright')
+    publication = manager.get_scripts(is_filtered='boilerplate_python/__init__.py')[0].publish()
+    assert publication.split('\n')[6] == '    :copyright: New copyright'
+    assert publication.split('\n')[7] == '    :license: New license'
