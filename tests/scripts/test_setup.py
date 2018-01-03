@@ -33,7 +33,7 @@ def test_setup_script_info(repo_path):
     kwargs = setup_script.content.info.code.setup
     _test_setup_kwargs(kwargs, 'name', 'Boilerplate-Python', 14)
     _test_setup_kwargs(kwargs, 'version', '0.0.0', 15)
-    _test_setup_kwargs(kwargs, 'url', 'https://gitlab.com/nicolas.maurice.valera/boilerplate-python', 17)
+    _test_setup_kwargs(kwargs, 'url', 'https://github.com/nmvalera/boilerplate-python', 17)
     _test_setup_kwargs(kwargs, 'author', 'Nicolas Maurice', 18)
     _test_setup_kwargs(kwargs, 'author_email', 'nicolas.maurice.valera@gmail.com', 19)
     _test_setup_kwargs(kwargs, 'description', 'Boilerplate-Python is an empty Python project', 20)
