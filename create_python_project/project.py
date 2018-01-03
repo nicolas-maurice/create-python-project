@@ -10,7 +10,8 @@
 
 from .git import RepositoryManager
 from .utils import get_script, get_info, publish, \
-    format_package_name, format_project_name, format_py_script_title
+    format_package_name, format_project_name, format_py_script_title, \
+    format_url
 
 
 class ProjectManager(RepositoryManager):
@@ -50,7 +51,7 @@ class ProjectManager(RepositoryManager):
         # Rename imports in .py files
         self.publish(is_filtered='*.py', old_import=old_info.packages[0].value, new_import=new_package_name)
 
-        # Replace textual
+        # Replace text
         self.publish(old_value=old_info.name.value, new_value=new_project_name)
         self.publish(old_value=old_info.packages[0].value, new_value=new_package_name)
         self.publish(old_value=old_info.packages[0].value.replace('_', '-'),
@@ -58,3 +59,32 @@ class ProjectManager(RepositoryManager):
 
         # Commit modifications
         self.git.commit('-am', 'rename project to {name}'.format(name=new_project_name))
+
+    def set_author(self, author_name=None, author_email=None):
+        # Update setup.py info
+        old_info = self.setup_info
+        self.publish(is_filtered='setup.py', author=author_name, author_email=author_email)
+
+        # Update text
+        self.publish(old_value=old_info.author.value, new_value=author_name)
+        self.publish(old_value=old_info.author_email.value, new_value=author_email)
+
+    def set_project_url(self, url):
+        old_info = self.setup_info
+        self.publish(is_filtered='setup.py', url=format_url(url, 'https'))
+        self.set_url_value(old_info.url.value, url)
+
+    def set_url_value(self, old_url, new_url):
+        for format in ['https+git', 'git', 'https', 'ssh']:
+            self.publish(old_value=format_url(old_url, format),
+                         new_value=format_url(new_url, format))
+
+    def set_origin(self, new_name, new_url):
+        # Renames origin and recreates it
+        self.remotes['origin'].rename(new_name)
+        self.create_remote('origin', new_url)
+
+        # Update values
+        self.set_project_url(url=new_url)
+        self.set_url_value(list(self.remotes[new_name].urls)[0],
+                           list(self.remotes['origin'].urls)[0])

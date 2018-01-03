@@ -11,7 +11,7 @@
 import os
 
 
-def test_rename_project(manager, ):
+def test_rename_project(manager):
     assert manager.setup_info.version.value == '0.0.0'
     assert manager.setup_info.name.value == 'Boilerplate-Python'
 
@@ -36,3 +36,35 @@ def test_rename_project(manager, ):
 
     # Test modifications have been correctly committed
     assert not manager.is_dirty()
+
+
+def test_set_author(manager):
+    old_info = manager.setup_info
+
+    manager.set_author(author_name='New Author')
+    assert manager.setup_info.author.value == 'New Author'
+    assert manager.setup_info.author_email.value == old_info.author_email.value
+
+    manager.set_author(author_email='new@author.com')
+    assert manager.setup_info.author.value == 'New Author'
+    assert manager.setup_info.author_email.value == 'new@author.com'
+
+    publication = manager.get_scripts(is_filtered='boilerplate_python/__init__.py')[0].publish()
+    assert publication.split('\n')[6] == '    :copyright: Copyright 2017 by New Author.'
+
+
+def test_set_origin(manager):
+    old_urls = list(manager.remotes['origin'].urls)
+
+    print(manager.setup_info.url.value)
+    manager.set_origin('upstream', 'https://github.com/nmvalera/new-remote.git')
+    assert list(manager.remotes['upstream'].urls) == old_urls
+    assert list(manager.remotes['origin'].urls) == ['https://github.com/nmvalera/new-remote.git']
+
+    assert manager.setup_info.url.value == 'https://github.com/nmvalera/new-remote'
+
+    publication = manager.get_scripts(is_filtered='CONTRIBUTING.rst')[0].publish()
+    assert publication.split('\n')[8] == '.. _`GitLab Issue Tracker`: https://github.com/nmvalera/new-remote/issues'
+
+    publication = manager.get_scripts(is_filtered='setup.py')[0].publish()
+    assert publication.split('\n')[25] == '    url=\'https://github.com/nmvalera/new-remote\','
