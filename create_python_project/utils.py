@@ -83,3 +83,28 @@ def format_project_name(name):
 def format_py_script_title(path):
     parts = path.split('/')
     return '.'.join(parts[:-1] + ([] if parts[1] == '__init__.py' else [parts[-1].split('.')[0]]))
+
+
+URL_PATTERNS = {
+    'https': re.compile('https://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git'),
+    'ssh': re.compile('git@(?P<domain>.+):(?P<owner>.+)/(?P<repo>.+).git'),
+    'git': re.compile(r'git://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git'),
+}
+
+URL_FORMATS = {
+    'https': 'https://{domain}/{owner}/{repo}.git',
+    'ssh': 'git@{domain}:{owner}/{repo}.git',
+    'git': 'git://{domain}/{owner}/{repo}.git'
+}
+
+
+def format_url(url, format):
+    assert format in URL_FORMATS.keys(), \
+        'URL compatible formats are \'git\', \'https\' or \'ssh\' but you passed {0}'.format(format)
+
+    for pattern in URL_PATTERNS.values():
+        match = pattern.match(url)
+        if match:
+            return URL_FORMATS[format].format(**match.groupdict())
+
+    raise AssertionError('Impossible to format url {0}'.format(url))

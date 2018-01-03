@@ -10,12 +10,14 @@
 
 import os
 
+import pytest
 from mock import Mock
 
 from create_python_project.info import BaseInfo
 from create_python_project.scripts import BaseScript, PyScript, IniScript
 from create_python_project.utils import get_script, get_info, publish, is_matching, \
-    format_project_name, format_package_name, format_py_script_title
+    format_project_name, format_package_name, format_py_script_title, \
+    format_url
 
 
 def _make_blob(path):
@@ -87,3 +89,14 @@ def test_format_py_script_title():
     assert format_py_script_title('boilerplate_python/__init__.py') == 'boilerplate_python'
     assert format_py_script_title('boilerplate_python/script.py') == 'boilerplate_python.script'
     assert format_py_script_title('tests/sub_package/script.py') == 'tests.sub_package.script'
+
+
+def test_format_url():
+    url = 'git@github.com:nmvalera/create-python-project.git'
+
+    assert format_url(url, 'https') == 'https://github.com/nmvalera/create-python-project.git'
+    assert format_url(url, 'ssh') == url
+    assert format_url(url, 'git') == 'git://github.com/nmvalera/create-python-project.git'
+
+    with pytest.raises(AssertionError):
+        format_url('git@github.com/nmvalera/create-python-project.git', 'https')
