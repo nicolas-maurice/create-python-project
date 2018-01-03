@@ -58,7 +58,7 @@ class ProjectManager(RepositoryManager):
                      new_value=new_package_name.replace('_', '-'))
 
         # Commit modifications
-        self.git.commit('-am', 'rename project to {name}'.format(name=new_project_name))
+        self.commit('-am', 'rename project to {name}'.format(name=new_project_name))
 
     def set_author(self, author_name=None, author_email=None):
         # Update setup.py info
@@ -69,10 +69,16 @@ class ProjectManager(RepositoryManager):
         self.publish(old_value=old_info.author.value, new_value=author_name)
         self.publish(old_value=old_info.author_email.value, new_value=author_email)
 
+        # Commit modifications
+        self.commit('-am', 'rename author')
+
     def set_project_url(self, url):
         old_info = self.setup_info
         self.publish(is_filtered='setup.py', url=format_url(url, 'https'))
         self.set_url_value(old_info.url.value, url)
+
+        # Commit modifications
+        self.commit('-am', 'set project url to {0}'.format(format_url(url, 'https')))
 
     def set_url_value(self, old_url, new_url):
         for format in ['https+git', 'git', 'https', 'ssh']:
@@ -89,5 +95,9 @@ class ProjectManager(RepositoryManager):
         self.set_url_value(list(self.remotes[new_name].urls)[0],
                            list(self.remotes['origin'].urls)[0])
 
+        self.commit('-am', 'set remote origin to {0}'.format(new_url, 'https'))
+
     def set_py_script_headers(self, license=None, copyright=None):
         self.publish(is_filtered='*.py', license=license, copyright=copyright)
+
+        self.commit('-am', 'set py script headers')

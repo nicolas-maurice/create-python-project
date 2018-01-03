@@ -52,6 +52,8 @@ def test_set_author(manager):
     publication = manager.get_scripts(is_filtered='boilerplate_python/__init__.py')[0].publish()
     assert publication.split('\n')[6] == '    :copyright: Copyright 2017 by New Author.'
 
+    assert not manager.is_dirty()
+
 
 def test_set_origin(manager):
     old_urls = list(manager.remotes['origin'].urls)
@@ -68,6 +70,8 @@ def test_set_origin(manager):
     publication = manager.get_scripts(is_filtered='setup.py')[0].publish()
     assert publication.split('\n')[25] == '    url=\'https://github.com/nmvalera/new-remote\','
 
+    assert not manager.is_dirty()
+
 
 def test_set_py_script_headers(manager):
     manager.set_py_script_headers(license='New license')
@@ -79,3 +83,5 @@ def test_set_py_script_headers(manager):
     publication = manager.get_scripts(is_filtered='boilerplate_python/__init__.py')[0].publish()
     assert publication.split('\n')[6] == '    :copyright: New copyright'
     assert publication.split('\n')[7] == '    :license: New license'
+
+    assert not manager.is_dirty()
