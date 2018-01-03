@@ -23,7 +23,7 @@ setup(
     name='Boilerplate-Python',
     version='0.0.0',
     license=read('LICENSE.rst'),
-    url='https://gitlab.com/nicolas.maurice.valera/boilerplate-python',
+    url='https://github.com/nmvalera/boilerplate-python',
     author='Nicolas Maurice',
     author_email='nicolas.maurice.valera@gmail.com',
     description='Boilerplate-Python is an empty Python project',
