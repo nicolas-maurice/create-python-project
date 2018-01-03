@@ -10,6 +10,7 @@
 
 import fnmatch
 import re
+from collections import OrderedDict
 
 from .scripts import get_script_class
 
@@ -85,14 +86,16 @@ def format_py_script_title(path):
     return '.'.join(parts[:-1] + ([] if parts[1] == '__init__.py' else [parts[-1].split('.')[0]]))
 
 
-URL_PATTERNS = {
-    'https': re.compile('https://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git'),
+URL_PATTERNS = OrderedDict({
+    'https+git': re.compile('https://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git'),
+    'https': re.compile('https://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+)'),
     'ssh': re.compile('git@(?P<domain>.+):(?P<owner>.+)/(?P<repo>.+).git'),
     'git': re.compile(r'git://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git'),
-}
+})
 
 URL_FORMATS = {
-    'https': 'https://{domain}/{owner}/{repo}.git',
+    'https': 'https://{domain}/{owner}/{repo}',
+    'https+git': 'https://{domain}/{owner}/{repo}.git',
     'ssh': 'git@{domain}:{owner}/{repo}.git',
     'git': 'git://{domain}/{owner}/{repo}.git'
 }

@@ -94,7 +94,8 @@ def test_format_py_script_title():
 def test_format_url():
     url = 'git@github.com:nmvalera/create-python-project.git'
 
-    assert format_url(url, 'https') == 'https://github.com/nmvalera/create-python-project.git'
+    assert format_url(url, 'https') == 'https://github.com/nmvalera/create-python-project'
+    assert format_url(url, 'https+git') == 'https://github.com/nmvalera/create-python-project.git'
     assert format_url(url, 'ssh') == url
     assert format_url(url, 'git') == 'git://github.com/nmvalera/create-python-project.git'
 
