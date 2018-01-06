@@ -14,6 +14,7 @@ import shutil
 
 import pytest
 import semver
+from click.testing import CliRunner
 from git import Git
 
 from create_python_project import RepositoryManager, ProjectManager
@@ -94,3 +95,12 @@ def manager(repo_path, monkeypatch, mocker, caplog):
     yield _manager
 
     _finalize_repo(_manager, repo_path, initial_commit)
+
+
+@pytest.fixture(scope='function')
+def cli_runner(mocker, manager):
+    _cli_runner = CliRunner()
+
+    mocker.patch.object(ProjectManager, 'clone_from', return_value=manager)
+
+    yield _cli_runner

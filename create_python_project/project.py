@@ -48,9 +48,12 @@ class ProjectManager(RepositoryManager):
         # Check project can be modified
         self.check_project()
 
+        # Format project name
         new_project_name, new_package_name = format_project_name(name), format_package_name(name)
 
         old_info = self.setup_info
+
+        # Rename package folder
         self.mv(old_info.packages[0].value, new_package_name)
 
         # Update python scripts headers title
@@ -68,6 +71,8 @@ class ProjectManager(RepositoryManager):
 
         # Commit modifications
         self.commit('-am', 'rename project to {name}'.format(name=new_project_name))
+
+        return new_project_name
 
     def set_project_author(self, author_name=None, author_email=None):
         # Check project can be modified
@@ -99,21 +104,27 @@ class ProjectManager(RepositoryManager):
         # Check project can be modified
         self.check_project()
 
-        # Renames origin and recreates it
+        # Renames origin
         self.remotes['origin'].rename(new_name)
-        self.create_remote('origin', new_url)
 
-        # Update values
-        self.set_project_url(url=new_url)
-        self.change_url(list(self.remotes[new_name].urls)[0],
-                        list(self.remotes['origin'].urls)[0])
+        if new_url is not None:  # pragma: no branch
+            # Re-creates origin
+            self.create_remote('origin', new_url)
 
+            # Update values
+            self.set_project_url(url=new_url)
+            self.change_url(list(self.remotes[new_name].urls)[0],
+                            list(self.remotes['origin'].urls)[0])
+
+        # Commit modifications
         self.commit('-am', 'set remote origin to {0}'.format(new_url, 'https'))
 
     def set_project_py_script_headers(self, license=None, copyright=None):
         # Check project can be modified
         self.check_project()
 
+        # Set license and copyright
         self.publish(is_filtered='*.py', license=license, copyright=copyright)
 
+        # Commit modifications
         self.commit('-am', 'set py script headers')

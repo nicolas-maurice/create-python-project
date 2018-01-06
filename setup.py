@@ -62,5 +62,9 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    test_suite='tests'
+    test_suite='tests',
+    entry_points='''
+        [console_scripts]
+        create-python-project=create_python_project.cli:create_python_project
+    '''
 )
