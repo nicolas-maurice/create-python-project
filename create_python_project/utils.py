@@ -1,6 +1,6 @@
 """
     create_python_project.utils
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Implements utilities functions
 

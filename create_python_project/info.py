@@ -1,6 +1,6 @@
 """
-    create_python_project.scripts.info
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    create_python_project.info
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Implement base info class
 

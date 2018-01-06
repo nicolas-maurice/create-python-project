@@ -1,6 +1,6 @@
 """
-    create_python_project.scripts.io
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    create_python_project.io
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Base class for input/output scripts
 
