@@ -2,7 +2,7 @@
     create_python_project.project
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Main class for manipulating a project
+    Implement ProjectManager which is the main class for manipulating a project
 
     :copyright: Copyright 2017 by Nicolas Maurice, see AUTHORS.rst for more details.
     :license: BSD, see :ref:`license` for more details.
@@ -15,6 +15,7 @@ from .utils import get_script, get_info, publish, \
 
 
 class ProjectManager(RepositoryManager):
+    """Main class for manipulating a project"""
 
     def get_scripts(self, *args, **kwargs):
         scripts = []
@@ -34,10 +35,18 @@ class ProjectManager(RepositoryManager):
         info = self.get_info(is_filtered='setup.py')
         return info[0].code.setup
 
-    def set_project_name(self, name):
+    def check_project(self):
         assert not self.is_dirty(), \
             'You have uncommmitted modifications. ' \
             'Please commit or stash all modifications before setting new project\'s name'
+
+    def change_url(self, old_url, new_url):
+        for url_format in ['https+git', 'git', 'https', 'ssh']:
+            self.publish(old_value=format_url(old_url, url_format), new_value=format_url(new_url, url_format))
+
+    def set_project_name(self, name):
+        # Check project can be modified
+        self.check_project()
 
         new_project_name, new_package_name = format_project_name(name), format_package_name(name)
 
@@ -60,7 +69,10 @@ class ProjectManager(RepositoryManager):
         # Commit modifications
         self.commit('-am', 'rename project to {name}'.format(name=new_project_name))
 
-    def set_author(self, author_name=None, author_email=None):
+    def set_project_author(self, author_name=None, author_email=None):
+        # Check project can be modified
+        self.check_project()
+
         # Update setup.py info
         old_info = self.setup_info
         self.publish(is_filtered='setup.py', author=author_name, author_email=author_email)
@@ -73,31 +85,35 @@ class ProjectManager(RepositoryManager):
         self.commit('-am', 'rename author')
 
     def set_project_url(self, url):
+        # Check project can be modified
+        self.check_project()
+
         old_info = self.setup_info
         self.publish(is_filtered='setup.py', url=format_url(url, 'https'))
-        self.set_url_value(old_info.url.value, url)
+        self.change_url(old_info.url.value, url)
 
         # Commit modifications
         self.commit('-am', 'set project url to {0}'.format(format_url(url, 'https')))
 
-    def set_url_value(self, old_url, new_url):
-        for format in ['https+git', 'git', 'https', 'ssh']:
-            self.publish(old_value=format_url(old_url, format),
-                         new_value=format_url(new_url, format))
+    def set_project_origin(self, new_name, new_url):
+        # Check project can be modified
+        self.check_project()
 
-    def set_origin(self, new_name, new_url):
         # Renames origin and recreates it
         self.remotes['origin'].rename(new_name)
         self.create_remote('origin', new_url)
 
         # Update values
         self.set_project_url(url=new_url)
-        self.set_url_value(list(self.remotes[new_name].urls)[0],
-                           list(self.remotes['origin'].urls)[0])
+        self.change_url(list(self.remotes[new_name].urls)[0],
+                        list(self.remotes['origin'].urls)[0])
 
         self.commit('-am', 'set remote origin to {0}'.format(new_url, 'https'))
 
-    def set_py_script_headers(self, license=None, copyright=None):
+    def set_project_py_script_headers(self, license=None, copyright=None):
+        # Check project can be modified
+        self.check_project()
+
         self.publish(is_filtered='*.py', license=license, copyright=copyright)
 
         self.commit('-am', 'set py script headers')
