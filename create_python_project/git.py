@@ -36,6 +36,10 @@ class RepositoryManager(Repo):
         for sub_tree in tree.trees:
             self.apply_func(func, is_filtered=is_filtered, tree=sub_tree, *args, **kwargs)
 
+    def commit(self, *args, **kwargs):
+        if self.is_dirty():
+            self.git.commit(*args, **kwargs)
+
     def get_tags(self):
         """Return ordered list of tags of the project ordered from most recent to oldest"""
         return sorted(self.tags, key=lambda tag: tag.commit.committed_datetime, reverse=True)
