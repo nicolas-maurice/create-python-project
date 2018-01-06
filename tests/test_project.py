@@ -41,11 +41,11 @@ def test_rename_project(manager):
 def test_set_author(manager):
     old_info = manager.setup_info
 
-    manager.set_author(author_name='New Author')
+    manager.set_project_author(author_name='New Author')
     assert manager.setup_info.author.value == 'New Author'
     assert manager.setup_info.author_email.value == old_info.author_email.value
 
-    manager.set_author(author_email='new@author.com')
+    manager.set_project_author(author_email='new@author.com')
     assert manager.setup_info.author.value == 'New Author'
     assert manager.setup_info.author_email.value == 'new@author.com'
 
@@ -58,7 +58,7 @@ def test_set_author(manager):
 def test_set_origin(manager):
     old_urls = list(manager.remotes['origin'].urls)
 
-    manager.set_origin('upstream', 'https://github.com/nmvalera/new-remote.git')
+    manager.set_project_origin('upstream', 'https://github.com/nmvalera/new-remote.git')
     assert list(manager.remotes['upstream'].urls) == old_urls
     assert list(manager.remotes['origin'].urls) == ['https://github.com/nmvalera/new-remote.git']
 
@@ -74,12 +74,12 @@ def test_set_origin(manager):
 
 
 def test_set_py_script_headers(manager):
-    manager.set_py_script_headers(license='New license')
+    manager.set_project_py_script_headers(license='New license')
     publication = manager.get_scripts(is_filtered='boilerplate_python/__init__.py')[0].publish()
     assert publication.split('\n')[6] == '    :copyright: Copyright 2017 by Nicolas Maurice.'
     assert publication.split('\n')[7] == '    :license: New license'
 
-    manager.set_py_script_headers(copyright='New copyright')
+    manager.set_project_py_script_headers(copyright='New copyright')
     publication = manager.get_scripts(is_filtered='boilerplate_python/__init__.py')[0].publish()
     assert publication.split('\n')[6] == '    :copyright: New copyright'
     assert publication.split('\n')[7] == '    :license: New license'
