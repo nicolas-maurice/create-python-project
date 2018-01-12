@@ -54,10 +54,12 @@ def _set_info(py_script, title=None, copyright=None, license=None):
     title_info = RSTTitleInfo(text=title,
                               symbol=py_script.content.info.docstring.title.symbol)
 
-    copyright = copyright if copyright is not None else py_script.content.info.docstring.copyright.text
+    copyright = copyright if copyright is not None else py_script.content.info.docstring.copyright.text \
+        if py_script.content.info.docstring.copyright is not None else None
     copyright_info = SingleLineTextInfo(text=copyright)
 
-    license = license if license is not None else py_script.content.info.docstring.license.text
+    license = license if license is not None else py_script.content.info.docstring.license.text \
+        if py_script.content.info.docstring.license is not None else None
     license_info = SingleLineTextInfo(text=license)
 
     new_info = PyInfo(docstring=PyDocstringInfo(title=title_info,
@@ -87,9 +89,9 @@ def test_py_script_change():
         '"""\n' \
         '    title\n' \
         '    =====\n' \
-        '    \n' \
+        '\n' \
         '    body\n' \
-        '    \n' \
+        '\n' \
         '    :copyright: Copyright\n' \
         '    :license: :ref:`license`\n' \
         '"""\n' \
@@ -100,9 +102,9 @@ def test_py_script_change():
         '"""\n' \
         '    title\n' \
         '    =====\n' \
-        '    \n' \
+        '\n' \
         '    body\n' \
-        '    \n' \
+        '\n' \
         '    :copyright: New Copyright\n' \
         '    :license: New License\n' \
         '"""\n' \
@@ -116,9 +118,9 @@ def test_py_script_change():
         '"""\n' \
         '    New Title\n' \
         '    =========\n' \
-        '    \n' \
+        '\n' \
         '    body\n' \
-        '    \n' \
+        '\n' \
         '    :copyright: Copyright\n' \
         '    :license: :ref:`license`\n' \
         '"""\n' \
@@ -126,6 +128,26 @@ def test_py_script_change():
         '__version__ = \'0.0.1\'\n'
     assert _test_py_script_valid_change(source=source,
                                         title='New Title') == publication
+
+    source = \
+        '"""\n' \
+        '    title\n' \
+        '    ~~~~~\n' \
+        '\n' \
+        '    body\n' \
+        '\n' \
+        '"""\n' \
+        '\n'
+
+    publication = \
+        '"""\n' \
+        '    New Title\n' \
+        '    ~~~~~~~~~\n' \
+        '\n' \
+        '    body\n' \
+        '"""\n' \
+        '\n'
+    assert _test_py_script_valid_change(source=source, title='New Title') == publication
 
 
 def _test_py_script_invalid_change(source, title=None, copyright=None, license=None):
@@ -150,9 +172,9 @@ def test_py_script_import_change():
         '"""\n' \
         '    New Title\n' \
         '    =========\n' \
-        '    \n' \
+        '\n' \
         '    body\n' \
-        '    \n' \
+        '\n' \
         '    :copyright: Copyright\n' \
         '    :license: :ref:`license`\n' \
         '"""\n' \
@@ -173,9 +195,9 @@ def test_py_script_import_change():
         '"""\n' \
         '    New Title\n' \
         '    =========\n' \
-        '    \n' \
+        '\n' \
         '    body\n' \
-        '    \n' \
+        '\n' \
         '    :copyright: Copyright\n' \
         '    :license: :ref:`license`\n' \
         '"""\n' \

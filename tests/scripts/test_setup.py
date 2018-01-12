@@ -121,7 +121,7 @@ def test_setup_script_change():
         '"""\n' \
         '    title\n' \
         '    ~~~~~\n' \
-        '    \n' \
+        '\n' \
         '    docstring\n' \
         '"""\n' \
         '\n' \
@@ -139,7 +139,7 @@ def test_setup_script_change():
         '"""\n' \
         '    title\n' \
         '    ~~~~~\n' \
-        '    \n' \
+        '\n' \
         '    docstring\n' \
         '"""\n' \
         '\n' \

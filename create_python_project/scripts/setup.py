@@ -73,7 +73,7 @@ class PySetupParser(PyParser):
     """Base class for parsing setup.py script"""
 
     def parse_code(self, content):
-        SetupVisitor(content).visit(self.ast)
+        SetupVisitor(content).visit(content.ast)
 
 
 class PySetupScript(PyScript):

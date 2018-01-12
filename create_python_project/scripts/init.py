@@ -48,7 +48,7 @@ class PyInitParser(PyParser):
     """Base class for parsing setup.py script"""
 
     def parse_code(self, content):
-        PyInitVisitor(content).visit(self.ast)
+        PyInitVisitor(content).visit(content.ast)
 
 
 class PyInitScript(PyScript):

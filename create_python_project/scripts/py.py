@@ -70,8 +70,11 @@ class PyCodeContent(ContentWithInfo):
         if isinstance(old_import, str) and isinstance(new_import, str):
             TransformImportVisitor(self, old_import=old_import, new_import=new_import).visit(self.ast)
 
+    def set_ast(self, text_script):
+        self.ast = ast.parse(text_script)
+
     def prepare_transform(self):
-        self.ast = ast.parse(self.output())
+        self.set_ast(self.output())
 
 
 class PyContent(ContentWithInfo):
@@ -81,13 +84,20 @@ class PyContent(ContentWithInfo):
 
     def __init__(self, info=None, lines=None):
         super().__init__(info, lines)
+        self.ast = None
         self.docstring = None
-        self.code = PyCodeContent(self.info.code)
+        self.code = PyCodeContent(info=self.info.code)
 
-    def init_docstring(self, docstring_lineno):
-        self.info.docstring = PyDocstringInfo()
-        self.docstring = RSTContent(info=self.info.docstring)
-        self.info.docstring_lineno = docstring_lineno
+    def set_ast(self, ast_module):
+        self.ast = ast_module
+        self.init_docstring()
+
+    def init_docstring(self):
+        docstring = ast.get_docstring(self.ast)
+        if docstring is not None:
+            self.info.docstring = PyDocstringInfo()
+            self.docstring = RSTContent(info=self.info.docstring)
+            self.info.docstring_lineno = self.ast.body[0].lineno
 
     def set_lines(self, lines=None):
         lines = lines or self.lines
@@ -96,7 +106,8 @@ class PyContent(ContentWithInfo):
 
     def output(self):
         if self.docstring is not None and self.docstring.lines:
-            docstring = '\n'.join(['"""'] + [' ' * 4 + line for line in self.docstring.lines] + ['"""\n'])
+            docstring = '\n'.join(['"""'] + [' ' * 4 + line.strip() if len(line.strip()) > 0 else ''
+                                             for line in self.docstring.lines] + ['"""\n'])
         else:
             docstring = ''
         return docstring + '\n'.join(self.code.lines)
@@ -138,25 +149,25 @@ class PyParser(BaseParser):
     """Base class for parsing py scripts"""
 
     def setup_parse(self, input_string):
+        """Prepare parsing"""
         super().setup_parse(input_string)
         self.docstring_parser = PyDocstringParser()
 
-        self.ast = ast.parse(input_string)
-        self.docstring = ast.get_docstring(self.ast)
-
     def parse(self, input_string, content):
         super().parse(input_string, content)
-        content.ast = self.ast
 
+        # Parse .py script using ast
+        content.set_ast(ast.parse(input_string))
+
+        # Parse docstring & code
         self.parse_docstring(content)
         self.parse_code(content)
 
         content.set_lines()
 
     def parse_docstring(self, content):
-        if self.docstring is not None:
-            content.init_docstring(self.ast.body[0].lineno)
-            self.docstring_parser.parse(self.docstring, content.docstring)
+        if content.docstring is not None:
+            self.docstring_parser.parse(ast.get_docstring(content.ast), content.docstring)
 
     def parse_code(self, content):
         pass
