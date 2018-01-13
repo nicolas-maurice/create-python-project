@@ -9,8 +9,19 @@
 """
 
 import click
+import git
 
 from .project import ProjectManager
+
+
+class Progress(git.RemoteProgress):
+
+    def line_dropped(self, line):
+        click.echo(line)
+
+    def update(self, op_code, *args, **kwargs):
+        if op_code & self.END:
+            click.echo(self._cur_line)
 
 
 @click.command()
@@ -38,28 +49,28 @@ def create_python_project(boilerplate, url, upstream_name,
                           project_name):
     """Creates a new project"""
 
-    click.echo('Creating new project...')
+    click.echo('Creating new project {name} from {boilerplate}...'.format(name=project_name, boilerplate=boilerplate))
 
     # Clone boilerplate
-    click.echo('Cloning project from {url}'.format(url=boilerplate))
-    manager = ProjectManager.clone_from(url=boilerplate, to_path=project_name)
+    manager = ProjectManager.clone_from(url=boilerplate, to_path=project_name, progress=Progress())
 
     # Set project origins
-    click.echo('Set project origin remote to {url}'.format(url=url))
-    manager.set_project_origin(upstream_name, url)
-    click.echo('Remote {remote} has been set'.format(remote=boilerplate))
+    click.echo("Contextualizing project...")
+    if url is not None:  # pragma: no branch
+        manager.set_project_origin(upstream_name, url)
+        click.echo('- Set project remote origin to {url}'.format(url=url))
 
     # Rename project
     new_name = manager.set_project_name(project_name)
-    click.echo('Project name has been set to {name}'.format(name=new_name))
+    click.echo('- Project name has been set to {name}'.format(name=new_name))
 
     # Rename author
     if author_name is not None:  # pragma: no branch
         manager.set_project_author(author_name=author_name)
-        click.echo('Project author\'s name has been set to {name}'.format(name=author_name))
+        click.echo('- Project author\'s name has been set to {name}'.format(name=author_name))
 
     if author_email is not None:  # pragma: no branch
         manager.set_project_author(author_email=author_email)
-        click.echo('Project author\'s email has been set to {email}'.format(email=author_email))
+        click.echo('- Project author\'s email has been set to {email}'.format(email=author_email))
 
-    click.echo('Project successfully created!! Happy coding! :-)')
+    click.echo(click.style('Project successfully created!! Happy coding! :-)', fg='green'))

@@ -8,10 +8,36 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from mock import call
+import click
 
 from create_python_project import ProjectManager
-from create_python_project.cli import create_python_project
+from create_python_project.cli import create_python_project, Progress
+
+
+def test_progress(cli_runner):
+    progress = Progress()
+
+    @click.command()
+    @click.option('-c', 'op_code', type=int)
+    @click.argument('line')
+    def test(op_code, line):
+        if op_code is None:
+            progress.line_dropped(line)
+        else:
+            progress._cur_line = line
+            progress.update(op_code)
+
+    result = cli_runner.invoke(test, ['Line'])
+    assert not result.exception
+    assert result.output == 'Line\n'
+
+    result = cli_runner.invoke(test, ['-c', 4, 'Current Line'])
+    assert not result.exception
+    assert result.output == ''
+
+    result = cli_runner.invoke(test, ['-c', 34, 'Current Line'])
+    assert not result.exception
+    assert result.output == 'Current Line\n'
 
 
 def test_main_command(cli_runner, manager):
@@ -22,8 +48,11 @@ def test_main_command(cli_runner, manager):
                                                        'new-project-name'])
 
     assert result.exit_code == 0
-    assert ProjectManager.clone_from.call_args_list == [call(url='git@github.com:nmvalera/boilerplate-python.git',
-                                                             to_path='new-project-name')]
+
+    # Test clone from has been correctly called
+    call = ProjectManager.clone_from.call_args_list[0]
+    assert call[1]['url'] == 'git@github.com:nmvalera/boilerplate-python.git'
+    assert call[1]['to_path'] == 'new-project-name'
 
     # Test remotes have been correctly updated
     assert list(manager.remotes['boilerplate'].urls) == ['git@github.com:nmvalera/boilerplate-python.git']
