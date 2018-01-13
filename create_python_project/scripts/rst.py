@@ -64,7 +64,7 @@ class RSTParser(BaseParser):
         defaults = {
             'file_insertion_enabled': False,
             'debug': False,
-            'report_level':4,
+            'report_level': 4,
         }
         settings = OptionParser(components=(self.rst_parser, SettingsSpec()),
                                 defaults=defaults).get_default_values()
