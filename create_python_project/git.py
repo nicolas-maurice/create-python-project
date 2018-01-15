@@ -82,7 +82,7 @@ class RepositoryManager(Repo):
         return blobs
 
     def get_commits(self, from_rev=None):
-        """A list of commits from a given revision
+        """Retrieve commits from a given revision
 
         :param from_tag: Optional revision from which to retrieve commits (usually a tag name or a commit hash)
         :type from_tag: str

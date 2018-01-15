@@ -144,6 +144,19 @@ class Config:
 
 
 def read_config(config_levels=(), file_paths=(), boilerplate_name=None, config=None, repo=None, **kwargs):
+    """Read configuration from various sources
+
+    :param config_levels: Optional git config levels (c.f. Config.from_git)
+    :type config_levels: list
+    :param file_paths: Optional config file to inspect to retrieve configuration from
+    :type file_paths: list
+    :param boilerplate_name: Optional name of the boilerplate (useful to indicate which section of config file to inspect)
+    :type boilerplate_name: str
+    :param config: Optional configuration to update when reading
+    :type config: Config
+    :param repo: Optional git repository to provide when `config_levels` contains 'repository'
+    :param kwargs: Optional extra kwargs to read configuration from
+    """
     config = config or Config(boilerplate_name)
 
     # set config from git information
