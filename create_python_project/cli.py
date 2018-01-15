@@ -39,7 +39,6 @@ class Progress(git.RemoteProgress):
               default=CONFIG_FILE_LOCATION)
 @click.pass_context
 def cli(ctx, file_path):
-    print(file_path)
     ctx.obj = read_config(config_levels=['system', 'global'], file_paths=[file_path])
 
 

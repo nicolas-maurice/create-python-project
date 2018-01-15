@@ -103,7 +103,7 @@ def manager(repo_path, monkeypatch, mocker, caplog):
 
 
 @pytest.fixture(scope='function')
-def cli_runner(mocker, manager, monkeypatch, config_path):
+def cli_runner(mocker, manager):
     _cli_runner = CliRunner()
 
     # mock clone_from function
