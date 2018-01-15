@@ -40,22 +40,21 @@ def test_progress(cli_runner):
     assert result.output == 'Current Line\n'
 
 
-def test_main_command(cli_runner, manager):
-    result = cli_runner.invoke(create_python_project, ['-b', 'git@github.com:nmvalera/boilerplate-python.git',
+def test_main_command_with_kwargs(cli_runner, manager):
+    result = cli_runner.invoke(create_python_project, ['-b', 'git@github.com:nmvalera/kwarg-boilerplate.git',
                                                        '-u', 'https://github.com/nmvalera/new-project-name.git',
-                                                       '-a', 'New Author',
-                                                       '-e', 'new@author.com',
+                                                       '-a', 'New Kwarg Author',
+                                                       '-e', 'new@kwarg-author.com',
                                                        'new-project-name'])
 
     assert result.exit_code == 0
 
     # Test clone from has been correctly called
     call = ProjectManager.clone_from.call_args_list[0]
-    assert call[1]['url'] == 'git@github.com:nmvalera/boilerplate-python.git'
+    assert call[1]['url'] == 'git@github.com:nmvalera/kwarg-boilerplate.git'
     assert call[1]['to_path'] == 'new-project-name'
 
     # Test remotes have been correctly updated
-    assert list(manager.remotes['boilerplate'].urls) == ['git@github.com:nmvalera/boilerplate-python.git']
     assert list(manager.remotes['origin'].urls) == ['https://github.com/nmvalera/new-project-name.git']
 
     # Test project has been correctly renamed
@@ -63,5 +62,28 @@ def test_main_command(cli_runner, manager):
     assert manager.get_info(is_filtered='new_project_name/__init__.py')[0].docstring.title.text == 'new_project_name'
 
     # Test author has been correctly renamed
-    assert manager.setup_info.author.value == 'New Author'
-    assert manager.setup_info.author_email.value == 'new@author.com'
+    assert manager.setup_info.author.value == 'New Kwarg Author'
+    assert manager.setup_info.author_email.value == 'new@kwarg-author.com'
+
+
+def test_main_command_with_no_kwargs(cli_runner, manager):
+    result = cli_runner.invoke(create_python_project, ['-u', 'https://github.com/nmvalera/new-project-name.git',
+                                                       'new-project-name'])
+
+    assert result.exit_code == 0
+
+    # Test clone from has been correctly called
+    call = ProjectManager.clone_from.call_args_list[0]
+    assert call[1]['url'] == 'git@github.com:nmvalera/rc-default-boilerplate.git'
+    assert call[1]['to_path'] == 'new-project-name'
+
+    # Test remotes have been correctly updated
+    assert list(manager.remotes['origin'].urls) == ['https://github.com/nmvalera/new-project-name.git']
+
+    # Test project has been correctly renamed
+    assert manager.get_info(is_filtered='README.rst')[0].title.text == 'New-Project-Name'
+    assert manager.get_info(is_filtered='new_project_name/__init__.py')[0].docstring.title.text == 'new_project_name'
+
+    # Test author has been correctly renamed
+    assert manager.setup_info.author.value == 'Rc Config Author'
+    assert manager.setup_info.author_email.value == 'author@rc-config.com'

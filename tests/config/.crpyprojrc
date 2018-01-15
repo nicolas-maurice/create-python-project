@@ -10,7 +10,7 @@ license = Rc Config license
 copyright = Rc Config copyright
 
 [boilerplate:DEFAULT]
-url = git@github.com:/nmvalera/boilerplate-python.git
+url = git@github.com:nmvalera/rc-default-boilerplate.git
 
 [boilerplate:rc-config-boilerplate]
-url = git@github.com:/nmvalera/rc-config-boilerplate.git
+url = git@github.com:nmvalera/rc-config-boilerplate.git

@@ -104,6 +104,8 @@ class Config:
         for opt in self.config_options:
             self._set_attr_from_config(opt[0], config, opt[1])
 
+        return True
+
     def from_git(self, config_level, repo=None):
         """Read config values from git configuration
 
