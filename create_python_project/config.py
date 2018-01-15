@@ -150,7 +150,8 @@ def read_config(config_levels=(), file_paths=(), boilerplate_name=None, config=N
     :type config_levels: list
     :param file_paths: Optional config file to inspect to retrieve configuration from
     :type file_paths: list
-    :param boilerplate_name: Optional name of the boilerplate (useful to indicate which section of config file to inspect)
+    :param boilerplate_name: Optional name of the boilerplate
+        (useful to indicate which section of config file to inspect)
     :type boilerplate_name: str
     :param config: Optional configuration to update when reading
     :type config: Config
