@@ -143,7 +143,7 @@ class Config:
             setattr(self, attr, config.get(*where))
 
 
-def read_config(config_levels, file_paths, boilerplate_name=None, config=None, repo=None, **kwargs):
+def read_config(config_levels=(), file_paths=(), boilerplate_name=None, config=None, repo=None, **kwargs):
     config = config or Config(boilerplate_name)
 
     # set config from git information

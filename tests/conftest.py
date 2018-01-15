@@ -17,7 +17,6 @@ import semver
 from click.testing import CliRunner
 from git import Git
 
-import create_python_project
 from create_python_project import RepositoryManager, ProjectManager
 
 DIR_NAME = os.path.dirname(__file__)
@@ -109,8 +108,5 @@ def cli_runner(mocker, manager, monkeypatch, config_path):
 
     # mock clone_from function
     mocker.patch.object(ProjectManager, 'clone_from', return_value=manager)
-
-    # monkeypatch config file location
-    monkeypatch.setattr(create_python_project.cli, 'CONFIG_FILE_LOCATION', value=config_path)
 
     yield _cli_runner

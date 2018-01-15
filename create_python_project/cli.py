@@ -33,7 +33,17 @@ class Progress(git.RemoteProgress):
             click.echo(self._cur_line)
 
 
-@click.command()
+@click.group()
+@click.option('--config-file', 'file_path',
+              help='Custom path to the configuration file',
+              default=CONFIG_FILE_LOCATION)
+@click.pass_context
+def cli(ctx, file_path):
+    print(file_path)
+    ctx.obj = read_config(config_levels=['system', 'global'], file_paths=[file_path])
+
+
+@cli.command(name='new')
 @click.option('--boilerplate', '-b', 'boilerplate_git_url',
               type=str,
               default='DEFAULT',
@@ -55,23 +65,28 @@ class Progress(git.RemoteProgress):
 @click.argument('project_name',
                 type=str,
                 required=True)
-def create_python_project(boilerplate_git_url, project_git_url, project_name, **kwargs):
+@click.pass_obj
+@click.pass_context
+def new(ctx, config, boilerplate_git_url, project_git_url, project_name, **kwargs):
     """Creates a new project"""
 
     if is_git_url(boilerplate_git_url):
-        config = read_config(config_levels=['system', 'global'],
-                             file_paths=[CONFIG_FILE_LOCATION],
+        config = read_config(config=config,
                              boilerplate_git_url=boilerplate_git_url,
                              **kwargs)
     else:
-        config = read_config(config_levels=['system', 'global'],
-                             file_paths=[CONFIG_FILE_LOCATION],
+        config = read_config(config=config,
                              boilerplate_name=boilerplate_git_url,
                              **kwargs)
-        assert config.boilerplate_git_url is not None and is_git_url(config.boilerplate_git_url), \
-            'Could not find a valid git URL for boilerplate {name} in {config_file} configuration file. ' \
-            'Please ensure you have correctly set up a [boilerplate:{name}] section ' \
-            'with a valid \'url\' option'.format(name=boilerplate_git_url, config_file=CONFIG_FILE_NAME)
+
+        # ensure a valid git url to clone the project from has been provided
+        if config.boilerplate_git_url is None or not is_git_url(config.boilerplate_git_url):
+            click.secho('Could not find a valid git URL for boilerplate \'{name}\' in {location} config file(s). '
+                        'Please ensure you have correctly set up a configuration file with a [boilerplate:{name}] '
+                        'section containing a valid \'url\' option.'.format(name=boilerplate_git_url,
+                                                                            location=config.attempted_config_files),
+                        fg='red')
+            ctx.exit(1)
 
     click.echo('Creating new project {name} from {git_url}...'.format(name=project_name,
                                                                       git_url=config.boilerplate_git_url))
@@ -98,4 +113,4 @@ def create_python_project(boilerplate_git_url, project_git_url, project_name, **
         manager.set_project_author(author_email=config.author_email)
         click.echo('- Project author\'s email has been set to {email}'.format(email=config.author_email))
 
-    click.echo(click.style('Project successfully created!! Happy coding! :-)', fg='green'))
+    click.secho('Project successfully created!! Happy coding! :-)', fg='green')

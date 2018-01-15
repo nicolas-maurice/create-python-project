@@ -11,7 +11,7 @@
 import click
 
 from create_python_project import ProjectManager
-from create_python_project.cli import create_python_project, Progress
+from create_python_project.cli import cli, Progress
 
 
 def test_progress(cli_runner):
@@ -40,12 +40,13 @@ def test_progress(cli_runner):
     assert result.output == 'Current Line\n'
 
 
-def test_main_command_with_kwargs(cli_runner, manager):
-    result = cli_runner.invoke(create_python_project, ['-b', 'git@github.com:nmvalera/kwarg-boilerplate.git',
-                                                       '-u', 'https://github.com/nmvalera/new-project-name.git',
-                                                       '-a', 'New Kwarg Author',
-                                                       '-e', 'new@kwarg-author.com',
-                                                       'new-project-name'])
+def test_new_with_kwargs(cli_runner, manager):
+    result = cli_runner.invoke(cli, ['new',
+                                     '-b', 'git@github.com:nmvalera/kwarg-boilerplate.git',
+                                     '-u', 'https://github.com/nmvalera/new-project-name.git',
+                                     '-a', 'New Kwarg Author',
+                                     '-e', 'new@kwarg-author.com',
+                                     'new-project-name'])
 
     assert result.exit_code == 0
 
@@ -66,9 +67,11 @@ def test_main_command_with_kwargs(cli_runner, manager):
     assert manager.setup_info.author_email.value == 'new@kwarg-author.com'
 
 
-def test_main_command_with_no_kwargs(cli_runner, manager):
-    result = cli_runner.invoke(create_python_project, ['-u', 'https://github.com/nmvalera/new-project-name.git',
-                                                       'new-project-name'])
+def test_new_with_no_kwargs(cli_runner, manager, config_path):
+    result = cli_runner.invoke(cli, ['--config-file', config_path,
+                                     'new',
+                                     '-u', 'https://github.com/nmvalera/new-project-name.git',
+                                     'new-project-name'])
 
     assert result.exit_code == 0
 
@@ -87,3 +90,12 @@ def test_main_command_with_no_kwargs(cli_runner, manager):
     # Test author has been correctly renamed
     assert manager.setup_info.author.value == 'Rc Config Author'
     assert manager.setup_info.author_email.value == 'author@rc-config.com'
+
+
+def test_new_with_error(cli_runner):
+    result = cli_runner.invoke(cli, ['--config-file', 'unknown-file',
+                                     'new',
+                                     '-u', 'https://github.com/nmvalera/new-project-name.git',
+                                     'new-project-name'])
+
+    assert result.exit_code == 1
