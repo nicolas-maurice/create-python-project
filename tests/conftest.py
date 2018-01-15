@@ -20,16 +20,21 @@ from git import Git
 from create_python_project import RepositoryManager, ProjectManager
 
 DIR_NAME = os.path.dirname(__file__)
-TEST_REPO = os.path.join(DIR_NAME, 'repo')
+
+
+@pytest.fixture(scope='function')
+def config_path():
+    yield os.path.join(DIR_NAME, 'config', '.crpyprojrc')
 
 
 @pytest.fixture(scope='function')
 def repo_path():
     # Set Directory to test repository to ensure consistency in tests
     initial_dir = os.getcwd()
-    os.chdir(TEST_REPO)
+    _test_repo = os.path.join(DIR_NAME, 'repo')
+    os.chdir(_test_repo)
 
-    yield TEST_REPO
+    yield _test_repo
 
     os.chdir(initial_dir)
 
