@@ -17,7 +17,14 @@ from create_python_project.info import BaseInfo
 from create_python_project.scripts import BaseScript, PyScript, IniScript
 from create_python_project.utils import get_script, get_info, publish, is_matching, \
     format_project_name, format_package_name, format_py_script_title, \
-    format_url
+    format_url, is_git_url
+
+
+def test_is_git_url():
+    assert is_git_url('git@github.com:nmvalera/rc-config-boilerplate.git')
+    assert is_git_url('https://github.com/nmvalera/create-python-project.git')
+    assert is_git_url('git://github.com/nmvalera/create-python-project.git')
+    assert not is_git_url('boilerplate-test')
 
 
 def _make_blob(path):

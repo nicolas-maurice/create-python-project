@@ -90,7 +90,7 @@ URL_PATTERNS = OrderedDict([
     ('https+git', re.compile('https://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git')),
     ('https', re.compile('https://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+)')),
     ('ssh', re.compile('git@(?P<domain>.+):(?P<owner>.+)/(?P<repo>.+).git')),
-    ('git', re.compile(r'git://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git')),
+    ('git', re.compile('git://(?P<domain>.+)/(?P<owner>.+)/(?P<repo>.+).git')),
 ])
 
 URL_FORMATS = {
@@ -99,6 +99,13 @@ URL_FORMATS = {
     'ssh': 'git@{domain}:{owner}/{repo}.git',
     'git': 'git://{domain}/{owner}/{repo}.git'
 }
+
+
+def is_git_url(url):
+    for format in ['https+git', 'ssh', 'git']:
+        if URL_PATTERNS[format].match(url):
+            return True
+    return False
 
 
 def format_url(url, format):

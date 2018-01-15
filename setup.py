@@ -10,7 +10,7 @@
 
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(file_name):
@@ -28,7 +28,7 @@ setup(
     author='Nicolas Maurice',
     author_email='nicolas.maurice.valera@gmail.com',
     description='Create-Python-Project is a CLI application to facilitate Python project management',
-    packages=['create_python_project'],
+    packages=find_packages(exclude=['tests*']),
     install_requires=[
         'click==6.3',
         'docutils==0.14.0',
