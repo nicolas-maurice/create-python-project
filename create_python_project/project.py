@@ -113,7 +113,7 @@ class ProjectManager(RepositoryManager):
         :param author_name: Optional new author name
         :type author_name: str
         :param author_email: Optional new author email
-        :type author_email:str
+        :type author_email: str
         """
 
         # Check project can be modified
