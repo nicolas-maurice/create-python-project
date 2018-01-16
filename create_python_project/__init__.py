@@ -11,7 +11,7 @@
 from .git import RepositoryManager
 from .project import ProjectManager
 
-__version__ = '0.0.0'
+__version__ = '0.1.0'
 
 __all__ = [
     'RepositoryManager',

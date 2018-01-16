@@ -22,7 +22,7 @@ def read(file_name):
 
 setup(
     name='Create-Python-Project',
-    version='0.0.0',
+    version='0.1.0',
     license=read('LICENSE.rst'),
     url='https://github.com/nicolas-maurice/create-python-project',
     author='Nicolas Maurice',
