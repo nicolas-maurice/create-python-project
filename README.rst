@@ -9,22 +9,25 @@ Create-Python-Project
 
 This project is inspired from excellent `Create-React-App`_.
 It implements a Command Line Interface to enable straightforward manipulation of Python projects.
-It allows to easily create a new Python project from an existing Python project by contextualizing it to your new project.
-Multiple context information can be updated such
+It allows to easily create a new Python project from an existing Python project (named boilerplate) used as a template.
+It does so by automically contextualizing a boilerplate to your project.
+
+Multiple context information can be updated such as
 
 - Project's name
 - Author's information (name and email)
-- Hyperlinks to specific resources (such as badges)
+- Hyperlinks to specific resources (such as travisd badges)
 - etc.
 
-When creating the new project Create-Python-Project
+How does it work?
+-----------------
 
-#. clones the original project
-#. applies commits for contextualization
-#. changes remote origin to the new project remote
-#. creates remote upstream to the original project
+When creating a new project Create-Python-Project
 
-This way it is straightforward to retrieve updates from the original project.
+#. clones the boilerplate project
+#. automatically applies modification to contextualize the boilerplate to your project
+#. commit all modifications
+#. manage remotes by setting origin to your new project url and setting an upstream to the boilerplate for later update
 
 .. _Create-React-App: https://github.com/facebookincubator/create-react-app
 
@@ -41,14 +44,21 @@ Git
 
 Having the latest version of ``git`` installed locally.
 
-Docker
-~~~~~~
-
-Having ``docker`` and ``docker-compose`` installed locally.
-
 Python
 ~~~~~~
 
-Having Python 3.5 and 3.6 installed locally.
+Create-Python-Project is compatible with Python 3.5 and 3.6.
 
-It is also recommended having ``virtualenv`` installed locally.
+Installation
+------------
+
+..  code-block:: sh
+
+    $ pip install create-python-project
+
+Creating a new project
+----------------------
+
+..  code-block:: sh
+
+    $ create-python-project new -b https://github.com/nmvalera/boilerplate-python.git new-project
