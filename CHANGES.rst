@@ -10,7 +10,7 @@ Features
 
 - CLI with one command ``create-python-project new`` allowing to instantiate a new project
 - CLI configuration can be done through args or from git information or from ``.crpyprojrc`` config file
-- Handles script formats *.py, setup.py, __init__.py, *.yml, *.rst, *.ini
+- Handles script formats \*.py, setup.py, __init__.py, \*.yml, \*.rst, \*.ini
 
 Version 0.0.0
 -------------
